@@ -120,8 +120,12 @@ let forecasts = client.get_forecast(1110600.try_into()?).await?.into_inner();
 and disables redirects and retries. A custom base URL must include `/open-data`
 or `/public-data`, without a trailing slash. Progenitor's raw constructors also
 remain available. The helper does not impose a response-size cap or concurrency
-limit: generated JSON decoding buffers the response. Integration into the proxies
-must retain their bounded transport/conversion behavior before switching clients.
+limit. The typed client's JSON decoding buffers responses. Each crate also exposes
+`raw::Client`, generated from the same contract with streaming success responses.
+It accepts the same injected reqwest client and returns the original decompressed
+bytes, allowing adapters to enforce body caps before parsing and retain exact
+source JSON. This streaming projection changes response handling only, not paths,
+parameters or the canonical specification. Callers own concurrency and stream limits.
 
 ## Develop and review changes
 

@@ -80,3 +80,21 @@ async fn html_errors_and_redirects_do_not_require_a_json_error_schema() {
         assert_eq!(server.seen.lock().unwrap().len(), 1);
     }
 }
+
+#[tokio::test]
+async fn raw_operations_preserve_original_response_bytes() {
+    use futures_util::StreamExt;
+    let server = support::server("public-data", StatusCode::OK).await;
+    let client =
+        ipma_public_data_client::raw::Client::new_with_client(&server.base, http_client().unwrap());
+    let mut stream = client
+        .get_forecast(1110600.try_into().unwrap())
+        .await
+        .unwrap()
+        .into_inner_stream();
+    let mut body = Vec::new();
+    while let Some(chunk) = stream.next().await {
+        body.extend(chunk.unwrap());
+    }
+    assert_eq!(body, include_bytes!("../../fixtures/get_forecast.json"));
+}
