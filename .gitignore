@@ -1,7 +1,7 @@
-/target/
-/.venv/
+**/target/
+**/.venv/
 /.artifacts/
 __pycache__/
 *.pyc
 .env
-/.ruff_cache/
+**/.ruff_cache/

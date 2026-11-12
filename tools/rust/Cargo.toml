@@ -1,0 +1,17 @@
+[package]
+name = "ipma-codegen"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99"
+publish = false
+
+[dependencies]
+anyhow = "1.0.104"
+progenitor = "=0.16.0"
+serde_yaml_ng = "0.10"
+openapiv3 = "2.2"
+prettyplease = "0.2"
+syn = { version = "2", features = ["full"] }
+
+[lints.rust]
+unsafe_code = "forbid"

@@ -18,8 +18,10 @@ jobs:
         with:
           version: "0.13.7"
       - run: uv python install
+        working-directory: tools/python
       - name: Capture live responses and report drift
-        run: uv run --locked python tools/contracts.py probe --output .artifacts/live-probe
+        working-directory: tools/python
+        run: uv run --locked python contracts.py probe --output ../../.artifacts/live-probe
       - name: Save reviewable samples and drift report
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

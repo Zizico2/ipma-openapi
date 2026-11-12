@@ -20,20 +20,36 @@ jobs:
         with:
           version: "0.13.7"
       - name: Install pinned toolchains
+        working-directory: tools/python
         run: |
           rustup toolchain install 1.99.1 --profile minimal --component rustfmt --component clippy
           uv python install
       - name: Validate specs, captures and drift detection
+        working-directory: tools/python
         run: |
-          uv run --locked python tools/contracts.py validate
-          uv run --locked python -m unittest discover -s tools -p 'test_*.py'
-          uv run --locked python tools/reference.py --check
-          uv run --locked ruff check tools
-          uv run --locked ruff format --check tools
-      - name: Verify generation and Rust clients
+          uv run --locked python contracts.py validate
+          uv run --locked python -m unittest discover -s . -p 'test_*.py'
+          uv run --locked python reference.py --check
+          uv run --locked ruff check .
+          uv run --locked ruff format --check .
+      - name: Verify Rust generation tooling
+        working-directory: tools/rust
         run: |
-          cargo run --locked -p ipma-codegen -- --check
+          cargo run --locked -- --check
           cargo fmt --all --check
-          cargo clippy --locked --workspace --all-targets -- -D warnings
-          cargo test --locked --workspace --all-targets
-          cargo test --locked --workspace --doc
+          cargo clippy --locked --all-targets -- -D warnings
+          cargo test --locked --all-targets
+      - name: Verify open-data Rust client
+        working-directory: open-data/rust
+        run: |
+          cargo fmt --all --check
+          cargo clippy --locked --all-targets -- -D warnings
+          cargo test --locked --all-targets
+          cargo test --locked --doc
+      - name: Verify public-data Rust client
+        working-directory: public-data/rust
+        run: |
+          cargo fmt --all --check
+          cargo clippy --locked --all-targets -- -D warnings
+          cargo test --locked --all-targets
+          cargo test --locked --doc

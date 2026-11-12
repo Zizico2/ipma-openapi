@@ -1,24 +1,28 @@
+set positional-arguments
+
 default:
     @just --list
 
-# Rewrite generated code and readable references after reviewing a spec change.
+# API/language directories own manifests, toolchains and language recipes.
+open-data-rust *args:
+    just --justfile open-data/rust/justfile "$@"
+
+public-data-rust *args:
+    just --justfile public-data/rust/justfile "$@"
+
 generate:
-    cargo run --locked -p ipma-codegen
-    uv run --locked python tools/reference.py
+    just --justfile tools/rust/justfile generate
+    just --justfile tools/python/justfile generate
 
-# Offline verification; never fetches new IPMA responses.
 verify:
-    cargo run --locked -p ipma-codegen -- --check
-    uv run --locked python tools/reference.py --check
-    uv run --locked python tools/contracts.py validate
-    uv run --locked python -m unittest discover -s tools -p 'test_*.py'
-    uv run --locked ruff check tools
-    uv run --locked ruff format --check tools
-    cargo fmt --all --check
-    cargo clippy --locked --workspace --all-targets -- -D warnings
-    cargo test --locked --workspace --all-targets
-    cargo test --locked --workspace --doc
+    just --justfile tools/python/justfile verify
+    just --justfile tools/rust/justfile verify
+    just --justfile open-data/rust/justfile verify
+    just --justfile public-data/rust/justfile verify
 
-# Live network probe: saves a separate report and never rewrites approved fixtures.
 probe:
-    uv run --locked python tools/contracts.py probe
+    just --justfile tools/python/justfile probe
+
+# Use a repository-relative path for a review candidate directory.
+capture output:
+    just --justfile tools/python/justfile capture "{{justfile_directory()}}/$1"

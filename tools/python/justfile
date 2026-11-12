@@ -1,0 +1,20 @@
+set positional-arguments
+
+default:
+    @just --list
+
+generate:
+    uv run --locked python reference.py
+
+verify:
+    uv run --locked python reference.py --check
+    uv run --locked python contracts.py validate
+    uv run --locked python -m unittest discover -s . -p 'test_*.py'
+    uv run --locked ruff check .
+    uv run --locked ruff format --check .
+
+probe:
+    uv run --locked python contracts.py probe
+
+capture output:
+    uv run --locked python contracts.py capture --output "$1"

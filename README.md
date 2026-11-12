@@ -6,14 +6,42 @@ They describe source responses and are not published or endorsed by IPMA.
 
 | API | Review the reference | Canonical specification | Generated Rust client |
 | --- | --- | --- | --- |
-| Documented `/open-data/` | [Readable reference](docs/open-data.md) | [open-data.yaml](specs/open-data.yaml) | [ipma-open-data-client](crates/ipma-open-data-client) |
-| Website `/public-data/` | [Readable reference](docs/public-data.md) | [public-data.yaml](specs/public-data.yaml) | [ipma-public-data-client](crates/ipma-public-data-client) |
+| Documented `/open-data/` | [Readable reference](open-data/reference.md) | [OpenAPI YAML](open-data/openapi.yaml) | [ipma-open-data-client](open-data/rust) |
+| Website `/public-data/` | [Readable reference](public-data/reference.md) | [OpenAPI YAML](public-data/openapi.yaml) | [ipma-public-data-client](public-data/rust) |
 
 The specs, generated clients, examples and source captures live together for one
 reviewable change history. The OpenAPI documents are the source of truth;
 generated Rust and Markdown are never edited by hand. Both clients can be
 consumed independently from this Git repository by package name and exact SHA.
 No sibling repository is needed. This repository does not depend on protobuf.
+
+## Repository layout
+
+The root contains language-neutral orchestration, not a Cargo package or workspace.
+Each API owns its contract, documentation, captures and language-specific clients,
+following the proto repositories' separation of schemas and language tooling.
+
+```text
+open-data/
+  openapi.yaml
+  reference.md
+  fixtures/             # source samples and API-local provenance manifest
+  rust/                 # ipma-open-data-client, with its own Cargo.toml/lockfile
+public-data/
+  openapi.yaml
+  reference.md
+  fixtures/
+  rust/                 # ipma-public-data-client, with its own Cargo.toml/lockfile
+tools/
+  rust/                 # shared Progenitor generator, manifest/lockfile/toolchain
+  python/               # validation, reference generation and drift tooling
+justfile                # delegates to the tooling and client recipes
+```
+
+Future language clients belong at `open-data/typescript/`, `public-data/go/`, etc.
+Cargo discovers the two independent Rust packages by name from a full Git checkout;
+consumers need no root Cargo.toml. The shared Rust test support lives with Rust
+tooling, while each client reads its own API's fixture manifest.
 
 ## Scope and evidence
 
@@ -31,14 +59,14 @@ and captured responses. Each operation records its evidence and verification dat
 Field descriptions distinguish source labels and observed meanings from formal
 upstream guarantees. These schemas are our maintained understanding of IPMA.
 
-All 24 operations have [captured fixtures](fixtures/manifest.json), verified on
-2026-11-12. The manifest records URL, actual media type, status, capture time,
+All 24 operations have captured fixtures with [open-data provenance](open-data/fixtures/manifest.json)
+and [public-data provenance](public-data/fixtures/manifest.json), verified on
+2026-11-12. Each manifest records URL, actual media type, status, capture time,
 response hash, fixture hash and sampling policy. JSON fixtures are structural
 samples: arrays retain distinct field/type combinations, while GeoJSON collections
 keep two small, unchanged source features. CSV fixtures keep the header and two
 source rows; ZIP fixtures keep the complete archive. Complete responses were
-validated before sampling. The
-initial live probe used the parameter examples in the specs; it does not establish
+validated before sampling. The initial live probe used the parameter examples in the specs; it does not establish
 coverage of every city, island, offset or future weather condition.
 
 A concrete reference discrepancy is recorded for evapotranspiration: the HTML
@@ -98,15 +126,16 @@ must retain their bounded transport/conversion behavior before switching clients
 ## Develop and review changes
 
 Requires Rust 1.99.1, uv and optionally Just. Python dependencies and tooling are
-locked in `uv.lock`; `.python-version` pins the interpreter. Cargo pins Progenitor
-exactly and checks in the workspace lockfile. Normal verification is offline
-with respect to IPMA, though first use downloads tool/dependency packages.
+locked in `tools/python/uv.lock`; its `.python-version` pins the interpreter.
+Each Rust directory owns its manifest, lockfile and pinned toolchain. Progenitor
+is pinned exactly in `tools/rust/`. Normal verification is offline with respect
+to IPMA, though first use downloads tool/dependency packages.
 
 ```sh
 rtk just verify
 rtk just generate
-rtk cargo run --locked -p ipma-open-data-client --example smoke
-rtk cargo run --locked -p ipma-public-data-client --example smoke
+rtk just open-data-rust smoke
+rtk just public-data-rust smoke
 rtk just probe
 ```
 
@@ -121,12 +150,13 @@ internal semantics are not fully validated. No network probe runs on a schedule.
 For an intentional fixture refresh:
 
 ```sh
-rtk proxy uv run --locked python tools/contracts.py capture --output .artifacts/review-candidate
+rtk just capture .artifacts/review-candidate
 ```
 
 Review the candidate manifest, failures and fields before copying approved
-responses and the manifest into `fixtures/`. A capture never overwrites an
-existing output directory. There is no automatic spec inference or auto-accept of
+responses and each API's manifest into `open-data/fixtures/` or `public-data/fixtures/`.
+Candidates mirror those API directories under the chosen output path. A capture
+never overwrites an existing output directory. There is no automatic spec inference or auto-accept of
 upstream changes. Update YAML descriptions/types and examples intentionally,
 regenerate, then commit the specs, captures, reference and generated code together.
 CI validates specifications/fixtures, rejects stale generated artifacts, runs

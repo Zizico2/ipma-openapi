@@ -1,0 +1,65 @@
+{
+  "records": [
+    {
+      "api": "public-data",
+      "operation": "get_forecast",
+      "file": "get_forecast.json",
+      "url": "https://api.ipma.pt/public-data/forecast/aggregate/1110600.json",
+      "status": 200,
+      "content_type": "application/json",
+      "captured_at": "2026-11-12T17:28:43.874438+00:00",
+      "response_bytes": 38111,
+      "response_sha256": "89dbdda6a5317e57d1f1b30006e8c2fae58dc04aa82f1f4363c97fecbce0fdd7",
+      "fixture_sha256": "b49b4b498a3f9da271e09faaf9a57ae34555c2d4a583750d0f0854104c1b284a",
+      "sampled": true,
+      "observed_additional_fields": [],
+      "sampling": "structural-source-sample"
+    },
+    {
+      "api": "public-data",
+      "operation": "get_locations",
+      "file": "get_locations.json",
+      "url": "https://api.ipma.pt/public-data/forecast/locations.json",
+      "status": 200,
+      "content_type": "application/json",
+      "captured_at": "2026-11-12T17:28:44.459853+00:00",
+      "response_bytes": 73522,
+      "response_sha256": "f254bf951201d3e4ad9ff0ce1cd7949d4afb3641ec92d1d6b5143a46c64b629e",
+      "fixture_sha256": "f5bc7f372c09c0605b5dcf15eb7c2427d49692283f164b4117902a16068ac6d0",
+      "sampled": true,
+      "observed_additional_fields": [],
+      "sampling": "structural-source-sample"
+    },
+    {
+      "api": "public-data",
+      "operation": "get_districts",
+      "file": "get_districts.json",
+      "url": "https://api.ipma.pt/public-data/districts.json",
+      "status": 200,
+      "content_type": "application/json",
+      "captured_at": "2026-11-12T17:28:44.813932+00:00",
+      "response_bytes": 1956,
+      "response_sha256": "89eff6d93f382724b4d9403f1a9608a8f6cee6c274cf8cb891897076239aaa14",
+      "fixture_sha256": "1da1227c23166770da59926218f4b432a18fa2987860b9209b8e5fdc5842edac",
+      "sampled": true,
+      "observed_additional_fields": [],
+      "sampling": "structural-source-sample"
+    },
+    {
+      "api": "public-data",
+      "operation": "get_warnings",
+      "file": "get_warnings.json",
+      "url": "https://api.ipma.pt/public-data/warnings/warnings_www.json",
+      "status": 200,
+      "content_type": "application/json",
+      "captured_at": "2026-11-12T17:28:45.254162+00:00",
+      "response_bytes": 43575,
+      "response_sha256": "e82315a4c610207faed16856de7eef4630d73a397933c659c3dc0c0c86f7e285",
+      "fixture_sha256": "ecf02823485b5320cbabe83dde4ee2afa0d8068855795d6f221636e6ffd1cecc",
+      "sampled": true,
+      "observed_additional_fields": [],
+      "sampling": "structural-source-sample"
+    }
+  ],
+  "failures": []
+}
