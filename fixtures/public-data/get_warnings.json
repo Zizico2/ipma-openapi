@@ -1,0 +1,25 @@
+{
+  "owner": "IPMA",
+  "country": "PT",
+  "data": [
+    {
+      "reportDate": "2026-11-12T17:15:02",
+      "text": "Períodos de chuva, por vezes forte.",
+      "awarenessTypeName": "Precipitação",
+      "idAreaAviso": "AVR",
+      "startTime": "2026-11-12T17:16:00",
+      "awarenessLevelID": "yellow",
+      "endTime": "2026-11-13T06:00:00"
+    },
+    {
+      "reportDate": "2026-11-12T17:15:02",
+      "text": "Períodos de chuva, por vezes forte.",
+      "awarenessTypeName": "Precipitação",
+      "idAreaAviso": "BRG",
+      "startTime": "2026-11-12T17:16:00",
+      "awarenessLevelID": "yellow",
+      "endTime": "2026-11-13T06:00:00"
+    }
+  ],
+  "dataAtualiza": "2026-11-12T17:28:01.339724"
+}

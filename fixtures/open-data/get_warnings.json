@@ -1,0 +1,18 @@
+[
+  {
+    "text": "",
+    "awarenessTypeName": "Agitação Marítima",
+    "idAreaAviso": "BGC",
+    "startTime": "2026-11-12T12:33:00",
+    "awarenessLevelID": "green",
+    "endTime": "2026-11-15T12:00:00"
+  },
+  {
+    "text": "",
+    "awarenessTypeName": "Nevoeiro",
+    "idAreaAviso": "BGC",
+    "startTime": "2026-11-12T12:33:00",
+    "awarenessLevelID": "green",
+    "endTime": "2026-11-15T12:00:00"
+  }
+]

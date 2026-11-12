@@ -1,0 +1,36 @@
+{
+  "owner": "IPMA",
+  "country": "PT",
+  "forecastDate": "2026-11-12",
+  "data": [
+    {
+      "wavePeriodMin": "6.1",
+      "globalIdLocal": 2320126,
+      "totalSeaMax": 2.0,
+      "waveHighMax": "1.8",
+      "waveHighMin": "1.1",
+      "longitude": "-16.3400",
+      "wavePeriodMax": "7.1",
+      "latitude": "33.2500",
+      "totalSeaMin": 1.5,
+      "sstMax": "22.0",
+      "predWaveDir": "W",
+      "sstMin": "21.9"
+    },
+    {
+      "wavePeriodMin": "6.1",
+      "globalIdLocal": 3420226,
+      "totalSeaMax": 2.0,
+      "waveHighMax": "1.9",
+      "waveHighMin": "1.2",
+      "longitude": "-25.6700",
+      "wavePeriodMax": "7.7",
+      "latitude": "37.9500",
+      "totalSeaMin": 1.5,
+      "sstMax": "20.1",
+      "predWaveDir": "SW",
+      "sstMin": "19.9"
+    }
+  ],
+  "dataUpdate": "2026-11-12T16:31:01"
+}

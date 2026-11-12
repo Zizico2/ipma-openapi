@@ -1,0 +1,183 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ria Formosa, Olhão",
+        "code": "OLH1",
+        "zone_type": "EST_LAG",
+        "region_name": "Algarve",
+        "representative_point": "POINT (-7.780593100230414 37.0329705)",
+        "status": "OPEN",
+        "interdictions": {
+          "open": [
+            {
+              "specie_c": "Ostra-japonesa/gigante",
+              "specie_s": "Magallana gigas",
+              "classification": "B"
+            },
+            {
+              "specie_c": "Amêijoa-boa",
+              "specie_s": "Ruditapes decussatus",
+              "classification": "B"
+            }
+          ],
+          "close": []
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -7.79505,
+              37.03677
+            ],
+            [
+              -7.79505,
+              37.036775
+            ],
+            [
+              -7.78255,
+              37.039208
+            ],
+            [
+              -7.77332,
+              37.039536
+            ],
+            [
+              -7.76927,
+              37.04121
+            ],
+            [
+              -7.76445,
+              37.03508
+            ],
+            [
+              -7.77276,
+              37.030861
+            ],
+            [
+              -7.77619,
+              37.02903
+            ],
+            [
+              -7.788,
+              37.02592
+            ],
+            [
+              -7.79505,
+              37.03677
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Rio Guadiana",
+        "code": "GUA",
+        "zone_type": "EST_LAG",
+        "region_name": "Algarve",
+        "representative_point": "POINT (-7.430467950276084 37.2108385)",
+        "status": "CLOSE",
+        "interdictions": {
+          "open": [],
+          "close": [
+            {
+              "specie_c": "Ostra-japonesa/gigante",
+              "specie_s": "Magallana gigas",
+              "classification": "B"
+            }
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -7.417322,
+              37.212061
+            ],
+            [
+              -7.424361,
+              37.210717
+            ],
+            [
+              -7.422557,
+              37.206923
+            ],
+            [
+              -7.426436,
+              37.206432
+            ],
+            [
+              -7.427537,
+              37.207618
+            ],
+            [
+              -7.433592,
+              37.206751
+            ],
+            [
+              -7.43604,
+              37.209098
+            ],
+            [
+              -7.437293,
+              37.21096
+            ],
+            [
+              -7.43771,
+              37.212341
+            ],
+            [
+              -7.437958,
+              37.213465
+            ],
+            [
+              -7.438038,
+              37.214246
+            ],
+            [
+              -7.438024,
+              37.214843
+            ],
+            [
+              -7.436623,
+              37.215047
+            ],
+            [
+              -7.423583,
+              37.214883
+            ],
+            [
+              -7.417304,
+              37.214678
+            ],
+            [
+              -7.417322,
+              37.212061
+            ]
+          ]
+        ]
+      }
+    }
+  ],
+  "crs": {
+    "type": "link",
+    "properties": {
+      "href": "http://spatialreference.org/ref/epsg/4326/",
+      "type": "proj4"
+    }
+  },
+  "snmb_reference": "105/2026",
+  "cd_decision": "105/2026",
+  "publication_date": "2026-11-12",
+  "bulletin_name": "1052026-ci_snmb-12_11_2026.pdf",
+  "owner": "IPMA",
+  "project": "SNMB-Interdictions State Bulletin"
+}

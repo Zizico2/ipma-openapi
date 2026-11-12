@@ -1,0 +1,39 @@
+name: Validate contracts and generated clients
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: contracts-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@94527f2e458b27549849d47d273a16bec83a01e9 # v7
+        with:
+          version: "0.13.7"
+      - name: Install pinned toolchains
+        run: |
+          rustup toolchain install 1.99.1 --profile minimal --component rustfmt --component clippy
+          uv python install
+      - name: Validate specs, captures and drift detection
+        run: |
+          uv run --locked python tools/contracts.py validate
+          uv run --locked python -m unittest discover -s tools -p 'test_*.py'
+          uv run --locked python tools/reference.py --check
+          uv run --locked ruff check tools
+          uv run --locked ruff format --check tools
+      - name: Verify generation and Rust clients
+        run: |
+          cargo run --locked -p ipma-codegen -- --check
+          cargo fmt --all --check
+          cargo clippy --locked --workspace --all-targets -- -D warnings
+          cargo test --locked --workspace --all-targets
+          cargo test --locked --workspace --doc

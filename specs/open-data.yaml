@@ -1,0 +1,1395 @@
+openapi: 3.0.3
+info:
+  title: IPMA open-data — community-maintained upstream contract
+  version: 0.1.0
+  description: 'Describes source HTTP responses, not the normalized gRPC API. This specification is maintained
+    independently and is not published or endorsed by IPMA. Based on the official HTML reference and captured
+    responses. Missing measurements, numeric strings, JSON numbers, nulls and -99 sentinels are kept in
+    their source representation. Unknown fields are permitted. Response fields are required only where
+    the source reference and/or consumer invariants provide evidence. Capture fixtures do not establish
+    universal guarantees. Naive timestamps are source strings interpreted as UTC by the website; no RFC3339
+    timezone suffix is invented. Attribution and reuse conditions: https://api.ipma.pt/.'
+  contact:
+    name: IPMA source reference (upstream)
+    url: https://api.ipma.pt/
+servers:
+- url: https://api.ipma.pt/open-data
+  description: IPMA upstream directory; keep the /open-data prefix when configuring a client
+externalDocs:
+  url: https://api.ipma.pt/
+  description: Official HTML reference
+x-last-verified: '2026-11-12'
+x-source-status: documented-html
+paths:
+  /forecast/meteorology/cities/daily/{globalIdLocal}.json:
+    get:
+      operationId: get_city_daily_forecast
+      summary: Five-day daily forecast for one city
+      description: Five-day daily forecast for one city
+      x-evidence:
+        url: https://api.ipma.pt/
+        basis: published-reference
+        verified: '2026-11-12'
+      parameters:
+      - name: globalIdLocal
+        in: path
+        required: true
+        description: IPMA weather location ID from distrits-islands.json.
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 4294967295
+          example: 1110600
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CityDailyForecastResponse'
+              examples:
+                captured:
+                  summary: Sample captured from IPMA on 2026-11-12; provenance is recorded in fixtures/manifest.json.
+                  externalValue: ../fixtures/open-data/get_city_daily_forecast.json
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-captured-fixture: fixtures/open-data/get_city_daily_forecast.json
+  /forecast/meteorology/cities/daily/hp-daily-forecast-day{idDay}.json:
+    get:
+      operationId: get_daily_forecasts
+      summary: Daily forecasts across locations
+      description: Daily forecasts across locations
+      x-evidence:
+        url: https://api.ipma.pt/
+        basis: published-reference
+        verified: '2026-11-12'
+      parameters:
+      - name: idDay
+        in: path
+        required: true
+        description: 'Day offset: 0 today, 1 tomorrow, 2 the following day.'
+        schema:
+          type: integer
+          minimum: 0
+          maximum: 2
+          example: 0
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DailyForecastResponse'
+              examples:
+                captured:
+                  summary: Sample captured from IPMA on 2026-11-12; provenance is recorded in fixtures/manifest.json.
+                  externalValue: ../fixtures/open-data/get_daily_forecasts.json
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-captured-fixture: fixtures/open-data/get_daily_forecasts.json
+  /forecast/warnings/warnings_www.json:
+    get:
+      operationId: get_warnings
+      summary: Published weather warnings
+      description: Published weather warnings
+      x-evidence:
+        url: https://api.ipma.pt/
+        basis: published-reference
+        verified: '2026-11-12'
+      parameters: []
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Warning'
+              examples:
+                captured:
+                  summary: Sample captured from IPMA on 2026-11-12; provenance is recorded in fixtures/manifest.json.
+                  externalValue: ../fixtures/open-data/get_warnings.json
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-captured-fixture: fixtures/open-data/get_warnings.json
+  /observation/meteorology/stations/observations.json:
+    get:
+      operationId: get_observations
+      summary: Rolling hourly station observations, approximately 24 hours
+      description: Rolling hourly station observations, approximately 24 hours
+      x-evidence:
+        url: https://api.ipma.pt/
+        basis: published-reference
+        verified: '2026-11-12'
+      parameters: []
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservationsResponse'
+              examples:
+                captured:
+                  summary: Sample captured from IPMA on 2026-11-12; provenance is recorded in fixtures/manifest.json.
+                  externalValue: ../fixtures/open-data/get_observations.json
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-captured-fixture: fixtures/open-data/get_observations.json
+  /forecast/oceanography/daily/hp-daily-sea-forecast-day{idDay}.json:
+    get:
+      operationId: get_sea_forecasts
+      summary: Daily coastal forecasts
+      description: Daily coastal forecasts
+      x-evidence:
+        url: https://api.ipma.pt/
+        basis: published-reference
+        verified: '2026-11-12'
+      parameters:
+      - name: idDay
+        in: path
+        required: true
+        description: 'Day offset: 0 today, 1 tomorrow, 2 the following day.'
+        schema:
+          type: integer
+          minimum: 0
+          maximum: 2
+          example: 0
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeaForecastResponse'
+              examples:
+                captured:
+                  summary: Sample captured from IPMA on 2026-11-12; provenance is recorded in fixtures/manifest.json.
+                  externalValue: ../fixtures/open-data/get_sea_forecasts.json
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-captured-fixture: fixtures/open-data/get_sea_forecasts.json
+  /forecast/meteorology/rcm/rcm-d{idDay}.json:
+    get:
+      operationId: get_fire_risk
+      summary: Municipal fire danger
+      description: Municipal fire danger
+      x-evidence:
+        url: https://api.ipma.pt/
+        basis: published-reference
+        verified: '2026-11-12'
+      parameters:
+      - name: idDay
+        in: path
+        required: true
+        description: 'Day offset: 0 today, 1 tomorrow, 2 the following day.'
+        schema:
+          type: integer
+          minimum: 0
+          maximum: 2
+          example: 0
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FireRiskResponse'
+              examples:
+                captured:
+                  summary: Sample captured from IPMA on 2026-11-12; provenance is recorded in fixtures/manifest.json.
+                  externalValue: ../fixtures/open-data/get_fire_risk.json
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-captured-fixture: fixtures/open-data/get_fire_risk.json
+  /forecast/meteorology/uv/uv.json:
+    get:
+      operationId: get_uv_forecasts
+      summary: Published UV forecasts
+      description: Published UV forecasts
+      x-evidence:
+        url: https://api.ipma.pt/
+        basis: published-reference
+        verified: '2026-11-12'
+      parameters: []
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UvForecast'
+              examples:
+                captured:
+                  summary: Sample captured from IPMA on 2026-11-12; provenance is recorded in fixtures/manifest.json.
+                  externalValue: ../fixtures/open-data/get_uv_forecasts.json
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-captured-fixture: fixtures/open-data/get_uv_forecasts.json
+  /observation/seismic/{idArea}.json:
+    get:
+      operationId: get_seismic_events
+      summary: Rolling thirty-day seismic catalogue
+      description: Rolling thirty-day seismic catalogue
+      x-evidence:
+        url: https://api.ipma.pt/
+        basis: published-reference
+        verified: '2026-11-12'
+      parameters:
+      - name: idArea
+        in: path
+        required: true
+        description: 'Seismic region: 3 Azores, 7 mainland/Madeira.'
+        schema:
+          type: integer
+          enum:
+          - 3
+          - 7
+          example: 7
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeismicResponse'
+              examples:
+                captured:
+                  summary: Sample captured from IPMA on 2026-11-12; provenance is recorded in fixtures/manifest.json.
+                  externalValue: ../fixtures/open-data/get_seismic_events.json
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-captured-fixture: fixtures/open-data/get_seismic_events.json
+  /distrits-islands.json:
+    get:
+      operationId: get_locations
+      summary: Weather locations and reference identifiers
+      description: Weather locations and reference identifiers
+      x-evidence:
+        url: https://api.ipma.pt/
+        basis: published-reference
+        verified: '2026-11-12'
+      parameters: []
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationsResponse'
+              examples:
+                captured:
+                  summary: Sample captured from IPMA on 2026-11-12; provenance is recorded in fixtures/manifest.json.
+                  externalValue: ../fixtures/open-data/get_locations.json
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-captured-fixture: fixtures/open-data/get_locations.json
+  /sea-locations.json:
+    get:
+      operationId: get_sea_locations
+      summary: Coastal locations
+      description: Coastal locations
+      x-evidence:
+        url: https://api.ipma.pt/
+        basis: published-reference
+        verified: '2026-11-12'
+      parameters: []
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Location'
+              examples:
+                captured:
+                  summary: Sample captured from IPMA on 2026-11-12; provenance is recorded in fixtures/manifest.json.
+                  externalValue: ../fixtures/open-data/get_sea_locations.json
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-captured-fixture: fixtures/open-data/get_sea_locations.json
+  /weather-type-classe.json:
+    get:
+      operationId: get_weather_codes
+      summary: Weather-type reference table
+      description: Weather-type reference table
+      x-evidence:
+        url: https://api.ipma.pt/
+        basis: published-reference
+        verified: '2026-11-12'
+      parameters: []
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeatherCodeResponse'
+              examples:
+                captured:
+                  summary: Sample captured from IPMA on 2026-11-12; provenance is recorded in fixtures/manifest.json.
+                  externalValue: ../fixtures/open-data/get_weather_codes.json
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-captured-fixture: fixtures/open-data/get_weather_codes.json
+  /wind-speed-daily-classe.json:
+    get:
+      operationId: get_wind_codes
+      summary: Wind-speed reference table
+      description: Wind-speed reference table
+      x-evidence:
+        url: https://api.ipma.pt/
+        basis: published-reference
+        verified: '2026-11-12'
+      parameters: []
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WindCodeResponse'
+              examples:
+                captured:
+                  summary: Sample captured from IPMA on 2026-11-12; provenance is recorded in fixtures/manifest.json.
+                  externalValue: ../fixtures/open-data/get_wind_codes.json
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-captured-fixture: fixtures/open-data/get_wind_codes.json
+  /precipitation-classe.json:
+    get:
+      operationId: get_precipitation_codes
+      summary: Precipitation-intensity reference table
+      description: Precipitation-intensity reference table
+      x-evidence:
+        url: https://api.ipma.pt/
+        basis: published-reference
+        verified: '2026-11-12'
+      parameters: []
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrecipitationCodeResponse'
+              examples:
+                captured:
+                  summary: Sample captured from IPMA on 2026-11-12; provenance is recorded in fixtures/manifest.json.
+                  externalValue: ../fixtures/open-data/get_precipitation_codes.json
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-captured-fixture: fixtures/open-data/get_precipitation_codes.json
+  /observation/meteorology/stations/obs-surface.geojson:
+    get:
+      operationId: get_recent_observations_geojson
+      summary: Recent station observations as GeoJSON
+      description: Recent station observations as GeoJSON The live server advertises text/plain; the body
+        contains GeoJSON. The schema describes the decoded JSON. Progenitor returns a raw ByteStream for
+        this media type; deserialize it into GeoFeatureCollection explicitly.
+      x-evidence:
+        url: https://api.ipma.pt/
+        basis: published-reference
+        verified: '2026-11-12'
+      parameters: []
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/GeoFeatureCollection'
+              examples:
+                captured:
+                  summary: Sample captured from IPMA on 2026-11-12; provenance is recorded in fixtures/manifest.json.
+                  externalValue: ../fixtures/open-data/get_recent_observations_geojson.json
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-captured-fixture: fixtures/open-data/get_recent_observations_geojson.json
+      x-body-encoding: json
+  /observation/meteorology/stations/stations.json:
+    get:
+      operationId: get_stations
+      summary: Station catalogue as an array of GeoJSON Features
+      description: Station catalogue as an array of GeoJSON Features
+      x-evidence:
+        url: https://api.ipma.pt/
+        basis: published-reference
+        verified: '2026-11-12'
+      parameters: []
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GeoFeature'
+              examples:
+                captured:
+                  summary: Sample captured from IPMA on 2026-11-12; provenance is recorded in fixtures/manifest.json.
+                  externalValue: ../fixtures/open-data/get_stations.json
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-captured-fixture: fixtures/open-data/get_stations.json
+  /observation/biology/bivalves/CI_SNMB.geojson:
+    get:
+      operationId: get_bivalve_zones
+      summary: Bivalve harvesting permissions and zone geometries
+      description: Bivalve harvesting permissions and zone geometries The live server advertises text/plain;
+        the body contains GeoJSON. The schema describes the decoded JSON. Progenitor returns a raw ByteStream
+        for this media type; deserialize it into GeoFeatureCollection explicitly.
+      x-evidence:
+        url: https://api.ipma.pt/
+        basis: published-reference
+        verified: '2026-11-12'
+      parameters: []
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/GeoFeatureCollection'
+              examples:
+                captured:
+                  summary: Sample captured from IPMA on 2026-11-12; provenance is recorded in fixtures/manifest.json.
+                  externalValue: ../fixtures/open-data/get_bivalve_zones.json
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-captured-fixture: fixtures/open-data/get_bivalve_zones.json
+      x-body-encoding: json
+  /observation/climate/precipitation/prec-p1d-continental-obssup-idw-concelhos-20d.csv:
+    get:
+      operationId: get_climate_precipitation
+      summary: Rolling twenty-day municipal precipitation
+      description: Municipal precipitation statistics; mean_tp and related totals are mm, maximum rate
+        statistics are mm/h. CSV columns time,zname,zid plus dataset-specific statistics. Values are kept
+        as CSV; DICO identifiers retain leading zeroes. Missing-value sentinels remain raw.
+      x-evidence:
+        url: https://api.ipma.pt/
+        basis: published-reference
+        verified: '2026-11-12'
+      parameters: []
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-csv-columns:
+        time: Source UTC time string.
+        zname: Municipality name.
+        zid: Municipality DICO string; preserve leading zeroes.
+        mean_maxprate: 'Raw numeric CSV value. -99 is nodata. Units: mm/h.'
+        std_maxprate: 'Raw numeric CSV value. -99 is nodata. Units: mm/h.'
+        min_maxprate: 'Raw numeric CSV value. -99 is nodata. Units: mm/h.'
+        max_maxprate: 'Raw numeric CSV value. -99 is nodata. Units: mm/h.'
+        percentile_25_maxprate: 'Raw numeric CSV value. -99 is nodata. Units: mm/h.'
+        median_maxprate: 'Raw numeric CSV value. -99 is nodata. Units: mm/h.'
+        percentile_75_maxprate: 'Raw numeric CSV value. -99 is nodata. Units: mm/h.'
+        mean_tp: 'Raw numeric CSV value. -99 is nodata. Units: mm.'
+        std_tp: 'Raw numeric CSV value. -99 is nodata. Units: mm.'
+        min_tp: 'Raw numeric CSV value. -99 is nodata. Units: mm.'
+        max_tp: 'Raw numeric CSV value. -99 is nodata. Units: mm.'
+        percentile_25_tp: 'Raw numeric CSV value. -99 is nodata. Units: mm.'
+        median_tp: 'Raw numeric CSV value. -99 is nodata. Units: mm.'
+        percentile_75_tp: 'Raw numeric CSV value. -99 is nodata. Units: mm.'
+      x-captured-fixture: fixtures/open-data/get_climate_precipitation.csv
+  /observation/climate/temperature/t2m-p1d-continental-obssup-idw-concelhos-20d.csv:
+    get:
+      operationId: get_climate_temperature
+      summary: Rolling twenty-day municipal temperature
+      description: Municipal air-temperature statistics, °C. CSV columns time,zname,zid plus dataset-specific
+        statistics. Values are kept as CSV; DICO identifiers retain leading zeroes. Missing-value sentinels
+        remain raw.
+      x-evidence:
+        url: https://api.ipma.pt/
+        basis: published-reference
+        verified: '2026-11-12'
+      parameters: []
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-csv-columns:
+        time: Source UTC time string.
+        zname: Municipality name.
+        zid: Municipality DICO string; preserve leading zeroes.
+        mean_maxt2m: 'Raw numeric CSV value. -99 is nodata. Units: °C.'
+        std_maxt2m: 'Raw numeric CSV value. -99 is nodata. Units: °C.'
+        min_maxt2m: 'Raw numeric CSV value. -99 is nodata. Units: °C.'
+        max_maxt2m: 'Raw numeric CSV value. -99 is nodata. Units: °C.'
+        percentile_25_maxt2m: 'Raw numeric CSV value. -99 is nodata. Units: °C.'
+        median_maxt2m: 'Raw numeric CSV value. -99 is nodata. Units: °C.'
+        percentile_75_maxt2m: 'Raw numeric CSV value. -99 is nodata. Units: °C.'
+        mean_mint2m: 'Raw numeric CSV value. -99 is nodata. Units: °C.'
+        std_mint2m: 'Raw numeric CSV value. -99 is nodata. Units: °C.'
+        min_mint2m: 'Raw numeric CSV value. -99 is nodata. Units: °C.'
+        max_mint2m: 'Raw numeric CSV value. -99 is nodata. Units: °C.'
+        percentile_25_mint2m: 'Raw numeric CSV value. -99 is nodata. Units: °C.'
+        median_mint2m: 'Raw numeric CSV value. -99 is nodata. Units: °C.'
+        percentile_75_mint2m: 'Raw numeric CSV value. -99 is nodata. Units: °C.'
+        mean_meant2m: Raw statistic for daily mean air temperature, °C. -99 is nodata.
+        std_meant2m: Raw statistic for daily mean air temperature, °C. -99 is nodata.
+        min_meant2m: Raw statistic for daily mean air temperature, °C. -99 is nodata.
+        max_meant2m: Raw statistic for daily mean air temperature, °C. -99 is nodata.
+        percentile_25_meant2m: Raw statistic for daily mean air temperature, °C. -99 is nodata.
+        median_meant2m: Raw statistic for daily mean air temperature, °C. -99 is nodata.
+        percentile_75_meant2m: Raw statistic for daily mean air temperature, °C. -99 is nodata.
+      x-captured-fixture: fixtures/open-data/get_climate_temperature.csv
+  /forecast/meteorology/icons_ipma_weather.zip:
+    get:
+      operationId: get_weather_icons
+      summary: Source weather icons ZIP
+      description: Auxiliary ZIP linked from the official API reference. Returned as raw bytes; filenames
+        are not a normalized icon API.
+      x-evidence:
+        url: https://api.ipma.pt/
+        basis: published-reference
+        verified: '2026-11-12'
+      parameters: []
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-captured-fixture: fixtures/open-data/get_weather_icons.zip
+  /observation/climate/evapotranspiration/et0-p1d-continental-obssup-idw-concelhos-20d.csv:
+    get:
+      operationId: get_climate_evapotranspiration
+      summary: Rolling twenty-day municipal evapotranspiration
+      description: Daily reference evapotranspiration, mm. CSV columns time,zname,zid plus dataset-specific
+        statistics. Values are kept as CSV; DICO identifiers retain leading zeroes. Missing-value sentinels
+        remain raw. The source reference lists slightly different legacy filenames; this path is verified
+        against the current service.
+      x-evidence:
+        url: https://api.ipma.pt/
+        basis: published-reference
+        verified: '2026-11-12'
+      parameters: []
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-csv-columns:
+        time: Source UTC time string.
+        zname: Municipality name.
+        zid: Municipality DICO string; preserve leading zeroes.
+        mean_et0: 'Raw numeric CSV value. -99 is nodata. Units: mm.'
+        std_et0: 'Raw numeric CSV value. -99 is nodata. Units: mm.'
+        min_et0: 'Raw numeric CSV value. -99 is nodata. Units: mm.'
+        max_et0: 'Raw numeric CSV value. -99 is nodata. Units: mm.'
+        percentile_25_et0: 'Raw numeric CSV value. -99 is nodata. Units: mm.'
+        median_et0: 'Raw numeric CSV value. -99 is nodata. Units: mm.'
+        percentile_75_et0: 'Raw numeric CSV value. -99 is nodata. Units: mm.'
+      x-captured-fixture: fixtures/open-data/get_climate_evapotranspiration.csv
+      x-published-path: /observation/climate/evapotranspiration/et0-p1d-continental-obssup-idw-20d-concelhos.csv
+      x-reference-discrepancy: The published filename returned HTTP 404 on 2026-11-12. This operation
+        uses the working filename listed in the live directory and captured in fixtures/manifest.json.
+components:
+  schemas:
+    NumericValue:
+      description: Raw measurement. Null, empty strings and -99 are missing-data representations; clients
+        do not normalize them.
+      oneOf:
+      - type: number
+        nullable: true
+      - type: string
+        pattern: ^\s*([+-]?([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][+-]?[0-9]+)?)?\s*$
+    CodeValue:
+      description: Raw category code. Unknown integers and numeric strings are allowed; no closed category
+        enum is inferred.
+      oneOf:
+      - type: integer
+        nullable: true
+      - type: string
+        pattern: ^\s*([+-]?[0-9]+)?\s*$
+    DailyForecast:
+      type: object
+      properties:
+        latitude:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Latitude in WGS84 degrees.
+        longitude:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Longitude in WGS84 degrees.
+        tMin:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Daily minimum air temperature, °C.
+        tMax:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Daily maximum air temperature, °C.
+        precipitaProb:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Daily precipitation probability, %. The source key is precipitaProb; prose reference
+            also spells probPrecipita.
+        idWeatherType:
+          allOf:
+          - $ref: '#/components/schemas/CodeValue'
+          description: Weather-type source code.
+        classWindSpeed:
+          allOf:
+          - $ref: '#/components/schemas/CodeValue'
+          description: Daily wind-speed class.
+        classPrecInt:
+          allOf:
+          - $ref: '#/components/schemas/CodeValue'
+          description: Precipitation intensity class.
+        predWindDir:
+          type: string
+          description: Prevailing compass direction.
+          nullable: true
+        forecastDate:
+          type: string
+          description: Forecast civil date, YYYY-MM-DD; not a timestamp.
+        globalIdLocal:
+          type: integer
+          description: Location identifier when supplied per row.
+          minimum: 0
+      additionalProperties: {}
+    CityDailyForecastResponse:
+      type: object
+      properties:
+        owner:
+          type: string
+          description: Source attribution.
+          nullable: true
+        country:
+          type: string
+          description: Source country code.
+          nullable: true
+        dataUpdate:
+          type: string
+          description: Source update timestamp; UTC, often without a timezone suffix.
+          nullable: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DailyForecast'
+        globalIdLocal:
+          type: integer
+          description: Location identifier.
+          minimum: 1
+      additionalProperties: {}
+      required:
+      - data
+      - globalIdLocal
+    DailyForecastResponse:
+      type: object
+      properties:
+        owner:
+          type: string
+          description: Source attribution.
+          nullable: true
+        country:
+          type: string
+          description: Source country code.
+          nullable: true
+        dataUpdate:
+          type: string
+          description: Source update timestamp; UTC, often without a timezone suffix.
+          nullable: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DailyForecast'
+        forecastDate:
+          type: string
+          description: Civil date applying to rows without their own forecastDate.
+      additionalProperties: {}
+      required:
+      - data
+      - forecastDate
+    Warning:
+      type: object
+      properties:
+        idAreaAviso:
+          type: string
+          description: Warning-area identifier.
+        awarenessTypeName:
+          type: string
+          description: Source phenomenon label, in Portuguese; unfamiliar values remain valid.
+        awarenessLevelID:
+          type: string
+          description: Source severity label; currently green/yellow/orange/red. Unknown values are retained.
+        text:
+          type: string
+          description: Source description; may be empty.
+          nullable: true
+        startTime:
+          type: string
+          description: Start instant; source timestamp string, UTC.
+        endTime:
+          type: string
+          description: End instant; source timestamp string, UTC.
+      additionalProperties: {}
+      required:
+      - idAreaAviso
+      - awarenessTypeName
+      - awarenessLevelID
+      - startTime
+      - endTime
+    StationObservation:
+      type: object
+      properties:
+        temperatura:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Mean air temperature over the hour, °C.
+        intensidadeVento:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Wind speed, m/s.
+        intensidadeVentoKM:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Wind speed, km/h.
+        precAcumulada:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Accumulated precipitation during the hour, mm.
+        humidade:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Hourly mean relative humidity, %.
+        pressao:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Hourly mean sea-level pressure, hPa.
+        radiacao:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Solar radiation, kJ/m².
+        idDireccVento:
+          allOf:
+          - $ref: '#/components/schemas/CodeValue'
+          description: Source wind direction code; do not treat code as degrees.
+      additionalProperties: {}
+      nullable: true
+    ObservationsResponse:
+      type: object
+      description: UTC observation timestamp → station-ID string → measurement object or null. Station
+        records can be null. Timestamp keys usually omit seconds and timezone suffixes.
+      additionalProperties:
+        type: object
+        additionalProperties:
+          $ref: '#/components/schemas/StationObservation'
+    SeaForecast:
+      type: object
+      properties:
+        latitude:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Latitude in WGS84 degrees.
+        longitude:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Longitude in WGS84 degrees.
+        globalIdLocal:
+          type: integer
+          description: Coastal location identifier.
+          minimum: 1
+        predWaveDir:
+          type: string
+          description: Prevailing wave direction.
+          nullable: true
+        wavePeriodMin:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Minimum daily swell peak period, s.
+        wavePeriodMax:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Maximum daily swell peak period, s.
+        waveHighMin:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Minimum daily swell height, m.
+        waveHighMax:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Maximum daily swell height, m.
+        totalSeaMin:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Minimum daily significant wave height, m.
+        totalSeaMax:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Maximum daily significant wave height, m.
+        sstMin:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Minimum daily sea-surface temperature, °C.
+        sstMax:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Maximum daily sea-surface temperature, °C.
+      additionalProperties: {}
+      required:
+      - globalIdLocal
+    SeaForecastResponse:
+      type: object
+      properties:
+        owner:
+          type: string
+          description: Source attribution.
+          nullable: true
+        country:
+          type: string
+          description: Source country code.
+          nullable: true
+        dataUpdate:
+          type: string
+          description: Source update timestamp; UTC, often without a timezone suffix.
+          nullable: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeaForecast'
+        forecastDate:
+          type: string
+          description: Forecast civil date.
+      additionalProperties: {}
+      required:
+      - data
+      - forecastDate
+    MunicipalFireRisk:
+      type: object
+      properties:
+        latitude:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Latitude in WGS84 degrees.
+        longitude:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Longitude in WGS84 degrees.
+        dico:
+          type: string
+          description: Municipality DICO string; preserve leading zeroes. Live feed uses lowercase dico;
+            the reference example uses uppercase DICO, which remains accepted and preserved as an additional
+            field.
+          nullable: true
+        data:
+          type: object
+          properties:
+            rcm:
+              allOf:
+              - $ref: '#/components/schemas/CodeValue'
+              description: Municipal fire-danger class. Currently 1..5; preserve unfamiliar codes.
+          additionalProperties: {}
+          required:
+          - rcm
+      additionalProperties: {}
+      required:
+      - data
+    FireRiskResponse:
+      type: object
+      properties:
+        dataPrev:
+          type: string
+          description: Forecast civil date.
+        dataRun:
+          type: string
+          description: Model run civil date.
+        fileDate:
+          type: string
+          description: Source update timestamp; observed space separator, UTC.
+          nullable: true
+        local:
+          type: object
+          description: Municipality DICO → risk record. Keys are strings with leading zeroes.
+          additionalProperties:
+            $ref: '#/components/schemas/MunicipalFireRisk'
+      additionalProperties: {}
+      required:
+      - dataPrev
+      - dataRun
+      - local
+    UvForecast:
+      type: object
+      properties:
+        globalIdLocal:
+          type: integer
+          description: Location identifier; zero is supplied for some unmapped locations.
+          minimum: 0
+        data:
+          type: string
+          description: Forecast civil date.
+        iUv:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: UV index.
+        idPeriodo:
+          allOf:
+          - $ref: '#/components/schemas/CodeValue'
+          description: Source-internal period code; meaning not inferred.
+        intervaloHora:
+          type: string
+          description: Published peak-hour interval; may be empty.
+          nullable: true
+      additionalProperties: {}
+      required:
+      - globalIdLocal
+      - data
+    SeismicEvent:
+      type: object
+      properties:
+        lat:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Epicentre latitude in WGS84 degrees.
+        lon:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Epicentre longitude in WGS84 degrees.
+        magnitud:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Reported magnitude; -99 is nodata.
+        depth:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Hypocentral depth, km.
+        time:
+          type: string
+          description: Event timestamp, UTC.
+          nullable: true
+        dataUpdate:
+          type: string
+          description: Record update timestamp, UTC.
+          nullable: true
+        magType:
+          type: string
+          description: Raw magnitude-type token.
+          nullable: true
+        source:
+          type: string
+          description: Reporting source.
+          nullable: true
+        obsRegion:
+          type: string
+          description: Source observation-region label.
+          nullable: true
+        shakemapid:
+          type: string
+          description: Source ShakeMap ID.
+          nullable: true
+        shakemapref:
+          type: string
+          description: Source ShakeMap reference.
+          nullable: true
+        sismoId:
+          type: string
+          description: Source event identifier.
+          nullable: true
+        googlemapref:
+          type: string
+          description: Source map reference.
+          nullable: true
+        tensorRef:
+          type: string
+          description: Source tensor reference.
+          nullable: true
+        local:
+          oneOf:
+          - type: string
+            nullable: true
+          - type: number
+          description: Locality token; preserved without coercion.
+        degree:
+          oneOf:
+          - type: string
+            nullable: true
+          - type: number
+          description: Reported intensity token; may be numeric, text, or null.
+        sensed:
+          type: boolean
+          nullable: true
+          description: Reported felt flag, if supplied.
+      additionalProperties: {}
+      required:
+      - time
+    SeismicResponse:
+      type: object
+      properties:
+        owner:
+          type: string
+          description: Source attribution.
+          nullable: true
+        country:
+          type: string
+          description: Source country code.
+          nullable: true
+        dataUpdate:
+          type: string
+          description: Source update timestamp; UTC, often without a timezone suffix.
+          nullable: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeismicEvent'
+        idArea:
+          type: integer
+          description: Source region selector.
+        updateDate:
+          type: string
+          description: Source catalogue update timestamp, UTC.
+          nullable: true
+        lastSismicActivityDate:
+          type: string
+          description: Most recent reported activity timestamp, UTC.
+          nullable: true
+      additionalProperties: {}
+      required:
+      - data
+    Location:
+      type: object
+      properties:
+        latitude:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Latitude in WGS84 degrees.
+        longitude:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Longitude in WGS84 degrees.
+        globalIdLocal:
+          type: integer
+          description: Location identifier.
+          minimum: 1
+        local:
+          type: string
+          description: Location name.
+        idAreaAviso:
+          type: string
+          description: Warning-area identifier.
+          nullable: true
+        idRegiao:
+          allOf:
+          - $ref: '#/components/schemas/CodeValue'
+          description: Region ID; currently 1 mainland, 2 Madeira, 3 Azores.
+        idDistrito:
+          allOf:
+          - $ref: '#/components/schemas/CodeValue'
+          description: District/island ID.
+        idConcelho:
+          allOf:
+          - $ref: '#/components/schemas/CodeValue'
+          description: Municipality component scoped by district; not a complete DICO.
+        idLocal:
+          allOf:
+          - $ref: '#/components/schemas/CodeValue'
+          description: Coastal location code.
+      additionalProperties: {}
+      required:
+      - globalIdLocal
+      - local
+    LocationsResponse:
+      type: object
+      properties:
+        owner:
+          type: string
+          description: Source attribution.
+          nullable: true
+        country:
+          type: string
+          description: Source country code.
+          nullable: true
+        dataUpdate:
+          type: string
+          description: Source update timestamp; UTC, often without a timezone suffix.
+          nullable: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Location'
+      additionalProperties: {}
+      required:
+      - data
+    WeatherCode:
+      type: object
+      properties:
+        idWeatherType:
+          allOf:
+          - $ref: '#/components/schemas/CodeValue'
+          description: Source category code, including unfamiliar values and reference-table sentinels.
+        descWeatherTypePT:
+          type: string
+          description: Portuguese description.
+          nullable: true
+        descWeatherTypeEN:
+          type: string
+          description: English description.
+          nullable: true
+      additionalProperties: {}
+      required:
+      - idWeatherType
+    WeatherCodeResponse:
+      type: object
+      properties:
+        owner:
+          type: string
+          description: Source attribution.
+          nullable: true
+        country:
+          type: string
+          description: Source country code.
+          nullable: true
+        dataUpdate:
+          type: string
+          description: Source update timestamp; UTC, often without a timezone suffix.
+          nullable: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WeatherCode'
+      additionalProperties: {}
+      required:
+      - data
+    WindCode:
+      type: object
+      properties:
+        classWindSpeed:
+          allOf:
+          - $ref: '#/components/schemas/CodeValue'
+          description: Source category code, including unfamiliar values and reference-table sentinels.
+        descClassWindSpeedPT:
+          type: string
+          description: Portuguese description.
+          nullable: true
+        descClassWindSpeedEN:
+          type: string
+          description: English description.
+          nullable: true
+      additionalProperties: {}
+      required:
+      - classWindSpeed
+    WindCodeResponse:
+      type: object
+      properties:
+        owner:
+          type: string
+          description: Source attribution.
+          nullable: true
+        country:
+          type: string
+          description: Source country code.
+          nullable: true
+        dataUpdate:
+          type: string
+          description: Source update timestamp; UTC, often without a timezone suffix.
+          nullable: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WindCode'
+      additionalProperties: {}
+      required:
+      - data
+    PrecipitationCode:
+      type: object
+      properties:
+        classPrecInt:
+          allOf:
+          - $ref: '#/components/schemas/CodeValue'
+          description: Source category code, including unfamiliar values and reference-table sentinels.
+        descClassPrecIntPT:
+          type: string
+          description: Portuguese description.
+          nullable: true
+        descClassPrecIntEN:
+          type: string
+          description: English description.
+          nullable: true
+      additionalProperties: {}
+      required:
+      - classPrecInt
+    PrecipitationCodeResponse:
+      type: object
+      properties:
+        owner:
+          type: string
+          description: Source attribution.
+          nullable: true
+        country:
+          type: string
+          description: Source country code.
+          nullable: true
+        dataUpdate:
+          type: string
+          description: Source update timestamp; UTC, often without a timezone suffix.
+          nullable: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PrecipitationCode'
+      additionalProperties: {}
+      required:
+      - data
+    Geometry:
+      type: object
+      properties:
+        type:
+          type: string
+          description: GeoJSON geometry type.
+        coordinates:
+          type: array
+          items: {}
+        geometries:
+          type: array
+          items: {}
+      additionalProperties: {}
+      required:
+      - type
+      nullable: true
+    GeoFeature:
+      type: object
+      properties:
+        type:
+          type: string
+          description: GeoJSON Feature.
+        geometry:
+          $ref: '#/components/schemas/Geometry'
+        properties:
+          type: object
+          nullable: true
+          additionalProperties: {}
+          description: Source station/bivalve properties, including nested values. No sentinel normalization.
+        id:
+          oneOf:
+          - type: string
+          - type: number
+      additionalProperties: {}
+      required:
+      - type
+    GeoFeatureCollection:
+      type: object
+      properties:
+        type:
+          type: string
+          description: GeoJSON FeatureCollection.
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/GeoFeature'
+      additionalProperties: {}
+      required:
+      - type
+      - features
+      description: Source metadata, CRS and foreign members are preserved through additional properties.
+        Coordinates are not reprojected.

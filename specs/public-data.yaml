@@ -1,0 +1,378 @@
+openapi: 3.0.3
+info:
+  title: IPMA public-data — community-maintained upstream contract
+  version: 0.1.0
+  description: 'Describes source HTTP responses, not the normalized gRPC API. This specification is maintained
+    independently and is not published or endorsed by IPMA. Based on the website JavaScript and captured
+    responses; covers only the four verified website feeds. No complete endpoint catalogue is claimed.
+    Missing measurements, numeric strings, JSON numbers, nulls and -99 sentinels are kept in their source
+    representation. Unknown fields are permitted. Response fields are required only where the source reference
+    and/or consumer invariants provide evidence. Capture fixtures do not establish universal guarantees.
+    Naive timestamps are source strings interpreted as UTC by the website; no RFC3339 timezone suffix
+    is invented. Attribution and reuse conditions: https://api.ipma.pt/.'
+  contact:
+    name: IPMA source reference (upstream)
+    url: https://api.ipma.pt/
+servers:
+- url: https://api.ipma.pt/public-data
+  description: IPMA upstream directory; keep the /public-data prefix when configuring a client
+externalDocs:
+  url: https://www.ipma.pt/opencms/bin/scripts/otempo/prev.localidade.hora.js
+  description: Website consumer JavaScript; observed behavior, not an official API contract
+x-last-verified: '2026-11-12'
+x-source-status: observed-website-feed
+paths:
+  /forecast/aggregate/{globalIdLocal}.json:
+    get:
+      operationId: get_forecast
+      summary: Mixed hourly, three-hourly and daily forecasts
+      description: Returns source rows without interpolation, sorting or filtering. To build a next-ten-hours
+        view, select idPeriodo=1 and future UTC timestamps. A fixed horizon is not guaranteed. Additional
+        fields and unfamiliar codes are permitted.
+      x-evidence:
+        url: https://www.ipma.pt/opencms/bin/scripts/otempo/prev.localidade.hora.js
+        basis: observed-consumer-and-fixtures
+        verified: '2026-11-12'
+      parameters:
+      - name: globalIdLocal
+        in: path
+        required: true
+        description: Website location ID from forecast/locations.json.
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 4294967295
+          example: 1110600
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Forecast'
+              examples:
+                captured:
+                  summary: Sample captured from IPMA on 2026-11-12; provenance is recorded in fixtures/manifest.json.
+                  externalValue: ../fixtures/public-data/get_forecast.json
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-captured-fixture: fixtures/public-data/get_forecast.json
+  /forecast/locations.json:
+    get:
+      operationId: get_locations
+      summary: Website forecast location catalogue
+      description: Website forecast location catalogue
+      x-evidence:
+        url: https://www.ipma.pt/opencms/bin/scripts/otempo/prev.localidade.hora.js
+        basis: observed-consumer-and-fixtures
+        verified: '2026-11-12'
+      parameters: []
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Location'
+              examples:
+                captured:
+                  summary: Sample captured from IPMA on 2026-11-12; provenance is recorded in fixtures/manifest.json.
+                  externalValue: ../fixtures/public-data/get_locations.json
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-captured-fixture: fixtures/public-data/get_locations.json
+  /districts.json:
+    get:
+      operationId: get_districts
+      summary: Website district/island catalogue
+      description: Website district/island catalogue
+      x-evidence:
+        url: https://www.ipma.pt/opencms/bin/scripts/otempo/prev.localidade.hora.js
+        basis: observed-consumer-and-fixtures
+        verified: '2026-11-12'
+      parameters: []
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/District'
+              examples:
+                captured:
+                  summary: Sample captured from IPMA on 2026-11-12; provenance is recorded in fixtures/manifest.json.
+                  externalValue: ../fixtures/public-data/get_districts.json
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-captured-fixture: fixtures/public-data/get_districts.json
+  /warnings/warnings_www.json:
+    get:
+      operationId: get_warnings
+      summary: Website warnings envelope
+      description: Website warnings envelope
+      x-evidence:
+        url: https://www.ipma.pt/opencms/bin/scripts/otempo/prev.localidade.hora.js
+        basis: observed-consumer-and-fixtures
+        verified: '2026-11-12'
+      parameters: []
+      responses:
+        '200':
+          description: Source response; see schema descriptions and captured fixtures.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WarningsResponse'
+              examples:
+                captured:
+                  summary: Sample captured from IPMA on 2026-11-12; provenance is recorded in fixtures/manifest.json.
+                  externalValue: ../fixtures/public-data/get_warnings.json
+        4XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+        5XX:
+          description: Non-success upstream response. The body format is not specified; it may be HTML
+            or plain text.
+      x-captured-fixture: fixtures/public-data/get_warnings.json
+components:
+  schemas:
+    NumericValue:
+      description: Raw measurement. Null, empty strings and -99 are missing-data representations; clients
+        do not normalize them.
+      oneOf:
+      - type: number
+        nullable: true
+      - type: string
+        pattern: ^\s*([+-]?([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][+-]?[0-9]+)?)?\s*$
+    CodeValue:
+      description: Raw category code. Unknown integers and numeric strings are allowed; no closed category
+        enum is inferred.
+      oneOf:
+      - type: integer
+        nullable: true
+      - type: string
+        pattern: ^\s*([+-]?[0-9]+)?\s*$
+    Forecast:
+      type: object
+      properties:
+        globalIdLocal:
+          type: integer
+          description: Source location ID.
+          minimum: 1
+        dataPrev:
+          type: string
+          description: Forecast timestamp, UTC. Daily rows also use this field.
+        dataUpdate:
+          type: string
+          description: Source row update timestamp, UTC.
+          nullable: true
+        idPeriodo:
+          allOf:
+          - $ref: '#/components/schemas/CodeValue'
+          description: Observed 1=hourly, 3=three-hourly, 24=daily. Unknown codes remain valid; coverage
+            is not fixed.
+        ddVento:
+          type: string
+          description: Wind direction source token.
+          nullable: true
+        dirOndulacao:
+          type: string
+          description: Wave direction source token.
+          nullable: true
+        tMed:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Air temperature, °C.
+        tMin:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Daily minimum temperature, °C; generally daily rows.
+        tMax:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Daily maximum temperature, °C; generally daily rows.
+        hR:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Relative humidity, %.
+        ffVento:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Wind speed at 10m, km/h.
+        utci:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Source UTCI value, °C; retained as its named index.
+        probabilidadePrecipita:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Website describes probability of >=0.3 mm precipitation during the preceding three
+            hours. Do not reinterpret as a one-hour probability.
+        iUv:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: UV index; generally daily rows.
+        tempAguaMar:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Sea-water temperature, °C.
+        marTotal:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Total significant sea-wave height, m.
+        ondulacao:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Swell height, m.
+        periodOndulacao:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Swell period, s.
+        periodoPico:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: Peak period, s.
+        idTipoTempo:
+          allOf:
+          - $ref: '#/components/schemas/CodeValue'
+          description: Weather-type source code.
+        idIntensidadePrecipita:
+          allOf:
+          - $ref: '#/components/schemas/CodeValue'
+          description: Precipitation intensity source code.
+        idFfxVento:
+          allOf:
+          - $ref: '#/components/schemas/CodeValue'
+          description: Daily wind-speed source class.
+      additionalProperties: {}
+      required:
+      - globalIdLocal
+      - dataPrev
+    Location:
+      type: object
+      properties:
+        globalIdLocal:
+          type: integer
+          description: Website location ID.
+          minimum: 1
+        local:
+          type: string
+          description: Location name.
+        latitude:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: WGS84 latitude, degrees.
+        longitude:
+          allOf:
+          - $ref: '#/components/schemas/NumericValue'
+          description: WGS84 longitude, degrees.
+        idAreaAviso:
+          type: string
+          description: Warning-area identifier.
+          nullable: true
+        idRegiao:
+          allOf:
+          - $ref: '#/components/schemas/CodeValue'
+          description: Region ID.
+        idDistrito:
+          allOf:
+          - $ref: '#/components/schemas/CodeValue'
+          description: District/island ID.
+        idConcelho:
+          allOf:
+          - $ref: '#/components/schemas/CodeValue'
+          description: District-scoped municipality component.
+      additionalProperties: {}
+      required:
+      - globalIdLocal
+      - local
+    District:
+      type: object
+      properties:
+        idDistrito:
+          type: integer
+          description: District/island identifier.
+          minimum: 1
+        idRegiao:
+          allOf:
+          - $ref: '#/components/schemas/CodeValue'
+          description: Region identifier.
+        nome:
+          type: string
+          description: District/island name.
+      additionalProperties: {}
+      required:
+      - idDistrito
+      - nome
+    Warning:
+      type: object
+      properties:
+        idAreaAviso:
+          type: string
+          description: Warning-area identifier.
+        awarenessTypeName:
+          type: string
+          description: Source phenomenon label, in Portuguese; unfamiliar values remain valid.
+        awarenessLevelID:
+          type: string
+          description: Source severity label; currently green/yellow/orange/red. Unknown values are retained.
+        text:
+          type: string
+          description: Source description; may be empty.
+          nullable: true
+        startTime:
+          type: string
+          description: Start instant; source timestamp string, UTC.
+        endTime:
+          type: string
+          description: End instant; source timestamp string, UTC.
+        reportDate:
+          type: string
+          description: Report timestamp, UTC.
+          nullable: true
+      additionalProperties: {}
+      required:
+      - idAreaAviso
+      - awarenessTypeName
+      - awarenessLevelID
+      - startTime
+      - endTime
+    WarningsResponse:
+      type: object
+      properties:
+        owner:
+          type: string
+          description: Source attribution.
+          nullable: true
+        country:
+          type: string
+          description: Country code.
+          nullable: true
+        dataAtualiza:
+          type: string
+          description: Source update timestamp, UTC; fractional seconds are observed.
+          nullable: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+      additionalProperties: {}
+      required:
+      - data

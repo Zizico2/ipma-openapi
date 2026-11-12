@@ -1,0 +1,86 @@
+{
+  "2026-11-12T09:00": {
+    "1210881": {
+      "intensidadeVentoKM": 15.1,
+      "temperatura": 19.7,
+      "radiacao": -99.0,
+      "idDireccVento": 6,
+      "precAcumulada": 0.0,
+      "intensidadeVento": 4.2,
+      "humidade": 78.0,
+      "pressao": 1006.7
+    },
+    "1210883": {
+      "intensidadeVentoKM": 2.9,
+      "temperatura": 17.1,
+      "radiacao": -99.0,
+      "idDireccVento": 5,
+      "precAcumulada": 0.0,
+      "intensidadeVento": 0.8,
+      "humidade": 95.0,
+      "pressao": 1007.6
+    },
+    "1210625": {
+      "intensidadeVentoKM": 6.1,
+      "temperatura": 15.3,
+      "radiacao": 154.5,
+      "idDireccVento": 7,
+      "precAcumulada": -99.0,
+      "intensidadeVento": 1.7,
+      "humidade": 98.0,
+      "pressao": 999.5
+    },
+    "1200533": {
+      "intensidadeVentoKM": 19.1,
+      "temperatura": 19.3,
+      "radiacao": 583.5,
+      "idDireccVento": 6,
+      "precAcumulada": 0.0,
+      "intensidadeVento": 5.3,
+      "humidade": 76.0,
+      "pressao": 1006.6
+    }
+  },
+  "2026-11-11T19:00": {
+    "1210881": {
+      "intensidadeVentoKM": 14.0,
+      "temperatura": 19.2,
+      "radiacao": -99.0,
+      "idDireccVento": 7,
+      "precAcumulada": 0.0,
+      "intensidadeVento": 3.9,
+      "humidade": 95.0,
+      "pressao": 994.7
+    },
+    "1210883": {
+      "intensidadeVentoKM": 11.5,
+      "temperatura": 19.2,
+      "radiacao": -99.0,
+      "idDireccVento": 7,
+      "precAcumulada": 0.0,
+      "intensidadeVento": 3.2,
+      "humidade": 95.0,
+      "pressao": 995.0
+    },
+    "1210625": {
+      "intensidadeVentoKM": 0.0,
+      "temperatura": -99.0,
+      "radiacao": 0.0,
+      "idDireccVento": 0,
+      "precAcumulada": -99.0,
+      "intensidadeVento": 0.0,
+      "humidade": -99.0,
+      "pressao": 993.7
+    },
+    "1200533": {
+      "intensidadeVentoKM": 26.6,
+      "temperatura": 19.1,
+      "radiacao": 0.0,
+      "idDireccVento": 7,
+      "precAcumulada": 0.0,
+      "intensidadeVento": 7.4,
+      "humidade": 86.0,
+      "pressao": 996.6
+    }
+  }
+}

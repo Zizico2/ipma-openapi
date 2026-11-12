@@ -1,0 +1,23 @@
+[package]
+name = "ipma-public-data-client"
+description = "Progenitor-generated HTTP client for IPMA public-data"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+[dependencies]
+progenitor-client.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+serde_urlencoded.workspace = true
+bytes.workspace = true
+futures-core.workspace = true
+regress.workspace = true
+[dev-dependencies]
+futures-util.workspace = true
+anyhow.workspace = true
+tokio.workspace = true
+axum.workspace = true
+[lints]
+workspace = true

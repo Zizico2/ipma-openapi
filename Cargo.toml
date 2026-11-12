@@ -1,0 +1,31 @@
+[workspace]
+members = ["crates/*"]
+resolver = "3"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99"
+publish = false
+
+[workspace.dependencies]
+anyhow = "1.0.104"
+progenitor = "=0.16.0"
+progenitor-client = "=0.16.0"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml_ng = "0.10"
+openapiv3 = "2.2"
+prettyplease = "0.2"
+syn = { version = "2", features = ["full"] }
+reqwest = { version = "0.13.5", default-features = false, features = ["rustls", "json", "query", "stream", "gzip"] }
+bytes = "1"
+futures-core = "0.3"
+futures-util = "0.3"
+serde_urlencoded = "0.7"
+regress = "0.10"
+tokio = { version = "1.54.1", features = ["macros", "rt-multi-thread", "net", "time"] }
+axum = "0.8"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
