@@ -696,6 +696,8 @@ Shape: `object`.
 | `classWindSpeed` | CodeValue | yes | Source category code, including unfamiliar values and reference-table sentinels. |
 | `descClassWindSpeedPT` | string or null | no | Portuguese description. |
 | `descClassWindSpeedEN` | string or null | no | English description. |
+| `descClassWindSpeedDailyPT` | string or null | no | Portuguese description; field spelling in the live daily wind table. |
+| `descClassWindSpeedDailyEN` | string or null | no | English description; field spelling in the live daily wind table. |
 
 ### WindCodeResponse
 

@@ -974,6 +974,18 @@ pub mod types {
         ///Source category code, including unfamiliar values and reference-table sentinels.
         #[serde(rename = "classWindSpeed")]
         pub class_wind_speed: CodeValue,
+        ///English description; field spelling in the live daily wind table.
+        #[serde(
+            rename = "descClassWindSpeedDailyEN",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub desc_class_wind_speed_daily_en: ::std::option::Option<::std::string::String>,
+        ///Portuguese description; field spelling in the live daily wind table.
+        #[serde(
+            rename = "descClassWindSpeedDailyPT",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub desc_class_wind_speed_daily_pt: ::std::option::Option<::std::string::String>,
         ///English description.
         #[serde(
             rename = "descClassWindSpeedEN",

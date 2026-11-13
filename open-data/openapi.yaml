@@ -1276,6 +1276,14 @@ components:
           type: string
           description: English description.
           nullable: true
+        descClassWindSpeedDailyPT:
+          type: string
+          nullable: true
+          description: Portuguese description; field spelling in the live daily wind table.
+        descClassWindSpeedDailyEN:
+          type: string
+          nullable: true
+          description: English description; field spelling in the live daily wind table.
       additionalProperties: {}
       required:
       - classWindSpeed
