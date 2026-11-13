@@ -23,10 +23,3 @@ pub fn http_client() -> Result<reqwest::Client, reqwest::Error> {
         .gzip(true)
         .build()
 }
-
-/// Generated operations returning the original decompressed response stream.
-/// Use with an injected HTTP client to enforce caller-owned transport policy,
-/// and drain the stream with a byte cap before parsing untrusted source data.
-#[allow(clippy::all, clippy::pedantic)]
-#[rustfmt::skip]
-pub mod raw;

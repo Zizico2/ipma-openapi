@@ -118,14 +118,11 @@ let forecasts = client.get_forecast(1110600.try_into()?).await?.into_inner();
 
 `http_client()` validates TLS, enables gzip, sets 15s total/5s connection timeouts,
 and disables redirects and retries. A custom base URL must include `/open-data`
-or `/public-data`, without a trailing slash. Progenitor's raw constructors also
-remain available. The helper does not impose a response-size cap or concurrency
-limit. The typed client's JSON decoding buffers responses. Each crate also exposes
-`raw::Client`, generated from the same contract with streaming success responses.
-It accepts the same injected reqwest client and returns the original decompressed
-bytes, allowing adapters to enforce body caps before parsing and retain exact
-source JSON. This streaming projection changes response handling only, not paths,
-parameters or the canonical specification. Callers own concurrency and stream limits.
+or `/public-data`, without a trailing slash. The standard Progenitor constructors
+remain available. JSON operations return decoded generated models; non-JSON
+operations return Progenitor's `ByteStream`. No custom client variant, response
+reader, or generator projection is maintained. JSON decoding buffers responses;
+there is no pre-decode body-size cap. Concurrency belongs to the calling service.
 
 ## Develop and review changes
 

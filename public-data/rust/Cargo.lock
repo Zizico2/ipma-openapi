@@ -617,7 +617,6 @@ dependencies = [
  "axum",
  "bytes",
  "futures-core",
- "futures-util",
  "progenitor-client",
  "regress",
  "reqwest",
