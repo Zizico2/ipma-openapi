@@ -68,8 +68,13 @@ def render(name, spec):
                 for key in ("minimum", "maximum", "enum")
                 if key in schema
             }
+            rolling = (
+                " Rolling: the example expires; probes use the current UTC time."
+                if "x-probe-current-utc" in parameter
+                else ""
+            )
             lines += [
-                f"- `{parameter['name']}`: {parameter['description']} Example: `{schema['example']}`. Constraints: `{limits}`."
+                f"- `{parameter['name']}`: {parameter['description']} Example: `{schema['example']}`. Constraints: `{limits}`.{rolling}"
             ]
         content = op["responses"]["200"]["content"]
         media = next(iter(content))

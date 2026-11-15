@@ -13,3 +13,6 @@ From the repository root, `rtk just capture .artifacts/review-candidate` writes
 an aggregate review report plus separate `open-data/fixtures/` and
 `public-data/fixtures/` candidate folders, including their local manifests.
 Neither capture nor probe rewrites approved fixtures or OpenAPI documents.
+Path parameters use their spec `example`, except those with
+`x-probe-current-utc`, which format the capture's current UTC time with that
+strftime pattern because rolling feeds expire old files.

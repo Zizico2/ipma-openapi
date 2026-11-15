@@ -52,20 +52,36 @@ The source is [IPMA's published HTML reference](https://api.ipma.pt/), checked
 against live responses. Directory index pages and unrelated downloads are not
 modeled as API operations. Day offsets and seismic regions use path parameters.
 
-Public-data covers **four verified website feeds**: aggregate forecasts,
-locations, districts and warnings. This is not an exhaustive public-data
-catalogue. The source is [the website consumer JavaScript](https://www.ipma.pt/opencms/bin/scripts/otempo/prev.localidade.hora.js)
-and captured responses. Each operation records its evidence and verification date.
+Public-data covers **eight verified Portugal website feeds**: aggregate forecasts,
+locations, districts, warnings, monthly series of daily surface-station
+summaries, LSA SAF fire-danger map frames for the mainland, ECMWF model map
+frames for Portugal and the Atlantic, and the matching ECMWF 10 m wind grid.
+This is not an exhaustive public-data catalogue. A full-site crawl also found
+world forecasts and icon crosswalks (out of scope), a weather-type table that
+duplicates open-data `weather-type-classe.json`, map thumbnails and bivalve
+bulletin PDFs; these are not modeled. The sources are the website consumer
+JavaScript of [hourly forecasts](https://www.ipma.pt/opencms/bin/scripts/otempo/prev.localidade.hora.js),
+[daily station monitoring](https://www.ipma.pt/opencms/pt/oclima/monitoriza.dia/),
+[fire danger](https://www.ipma.pt/opencms/pt/riscoincendio/fwi/) and
+[numerical forecasts](https://www.ipma.pt/opencms/pt/otempo/prev.numerica/index-mf2.jsp),
+plus captured responses. Each operation records its evidence and verification date.
 Field descriptions distinguish source labels and observed meanings from formal
 upstream guarantees. These schemas are our maintained understanding of IPMA.
 
-All 24 operations have captured fixtures with [open-data provenance](open-data/fixtures/manifest.json)
+Map frames and wind grids are rolling: only roughly yesterday to a few days
+ahead is published, and missing files redirect to the IPMA homepage with HTTP
+302 instead of returning 404. Their time path parameters carry
+`x-probe-current-utc`, so captures and probes request the current UTC frame
+instead of an expired example.
+
+All 28 operations have captured fixtures with [open-data provenance](open-data/fixtures/manifest.json)
 and [public-data provenance](public-data/fixtures/manifest.json), verified on
-2026-11-12. Each manifest records URL, actual media type, status, capture time,
+2026-11-12 (public-data station and map feeds on 2026-11-15). Each manifest records URL, actual media type, status, capture time,
 response hash, fixture hash and sampling policy. JSON fixtures are structural
 samples: arrays retain distinct field/type combinations, while GeoJSON collections
-keep two small, unchanged source features. CSV fixtures keep the header and two
-source rows; ZIP fixtures keep the complete archive. Complete responses were
+keep two small, unchanged source features and wind grids keep each component's
+header and first row. CSV fixtures keep the header and two source rows; ZIP and
+PNG fixtures keep the complete file. Complete responses were
 validated before sampling. The initial live probe used the parameter examples in the specs; it does not establish
 coverage of every city, island, offset or future weather condition.
 
@@ -93,7 +109,7 @@ website's precipitation probability has a three-hour meaning, not a per-hour one
 Additional source fields are retained in generated `extra` maps. Known optional
 fields use generated `Option` values, so null and omission merge on deserialize.
 Numeric measurements use floating-point models, so `0` may serialize as `0.0`.
-Retain original bytes when exact JSON representation matters. CSV and ZIP
+Retain original bytes when exact JSON representation matters. CSV, ZIP and PNG
 operations return raw `ByteStream` responses; CSV column meanings are recorded in
 `x-csv-columns` and the readable reference. No implicit CSV parsing is generated.
 The two `.geojson` feeds advertise `text/plain` despite containing GeoJSON. The

@@ -79,6 +79,74 @@ pub mod types {
                 })
         }
     }
+    ///`DailyStationObservation`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct DailyStationObservation {
+        ///Observation day as a UTC midnight timestamp with a Z suffix and milliseconds.
+        pub datetime: ::std::string::String,
+        ///Daily mean wind speed. Unit not labelled by the website; observed magnitudes are consistent with m/s.
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub ff_med: ::std::option::Option<NumericValue>,
+        ///Daily mean relative humidity, %. Unit not labelled by the website; inferred from observed values.
+        #[serde(
+            rename = "HR_med",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub hr_med: ::std::option::Option<NumericValue>,
+        ///Daily mean sea-level pressure, hPa. Unit not labelled by the website; inferred from observed values.
+        #[serde(
+            rename = "Pr_Nm_med",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub pr_nm_med: ::std::option::Option<NumericValue>,
+        ///Daily accumulated precipitation, mm.
+        #[serde(
+            rename = "RRR_qt",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub rrr_qt: ::std::option::Option<NumericValue>,
+        ///Daily maximum air temperature, °C.
+        #[serde(
+            rename = "Tar_max",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub tar_max: ::std::option::Option<NumericValue>,
+        ///Daily mean air temperature, °C.
+        #[serde(
+            rename = "Tar_med",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub tar_med: ::std::option::Option<NumericValue>,
+        ///Daily minimum air temperature, °C.
+        #[serde(
+            rename = "Tar_min",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub tar_min: ::std::option::Option<NumericValue>,
+        #[serde(flatten)]
+        pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+    }
+    ///`DailyStationObservations`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct DailyStationObservations {
+        pub data: ::std::vec::Vec<DailyStationObservation>,
+        ///Station elevation, m.
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub height: ::std::option::Option<NumericValue>,
+        ///WGS84 latitude, degrees.
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub latitude: ::std::option::Option<NumericValue>,
+        ///WGS84 longitude, degrees.
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub longitude: ::std::option::Option<NumericValue>,
+        ///Surface station ID as a decimal string.
+        pub station_id: ::std::string::String,
+        ///Station name; the website strips a trailing " (IPMA)" for display.
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub station_name: ::std::option::Option<::std::string::String>,
+        #[serde(flatten)]
+        pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+    }
     ///`District`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
     pub struct District {
@@ -206,6 +274,384 @@ pub mod types {
         pub utci: ::std::option::Option<NumericValue>,
         #[serde(flatten)]
         pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+    }
+    ///`GetDailyStationObservationsMonthDir`
+    #[derive(::serde::Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+    #[serde(transparent)]
+    pub struct GetDailyStationObservationsMonthDir(::std::string::String);
+    impl ::std::ops::Deref for GetDailyStationObservationsMonthDir {
+        type Target = ::std::string::String;
+        fn deref(&self) -> &::std::string::String {
+            &self.0
+        }
+    }
+    impl ::std::convert::From<GetDailyStationObservationsMonthDir>
+    for ::std::string::String {
+        fn from(value: GetDailyStationObservationsMonthDir) -> Self {
+            value.0
+        }
+    }
+    impl ::std::str::FromStr for GetDailyStationObservationsMonthDir {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            static PATTERN: ::std::sync::LazyLock<::regress::Regex> = ::std::sync::LazyLock::new(||
+            { ::regress::Regex::new("^(0[1-9]|1[0-2])$").unwrap() });
+            if PATTERN.find(value).is_none() {
+                return Err("doesn't match pattern \"^(0[1-9]|1[0-2])$\"".into());
+            }
+            Ok(Self(value.to_string()))
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for GetDailyStationObservationsMonthDir {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String>
+    for GetDailyStationObservationsMonthDir {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl<'de> ::serde::Deserialize<'de> for GetDailyStationObservationsMonthDir {
+        fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+        where
+            D: ::serde::Deserializer<'de>,
+        {
+            ::std::string::String::deserialize(deserializer)?
+                .parse()
+                .map_err(|e: self::error::ConversionError| {
+                    <D::Error as ::serde::de::Error>::custom(e.to_string())
+                })
+        }
+    }
+    ///`GetFireDangerMapDate`
+    #[derive(::serde::Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+    #[serde(transparent)]
+    pub struct GetFireDangerMapDate(::std::string::String);
+    impl ::std::ops::Deref for GetFireDangerMapDate {
+        type Target = ::std::string::String;
+        fn deref(&self) -> &::std::string::String {
+            &self.0
+        }
+    }
+    impl ::std::convert::From<GetFireDangerMapDate> for ::std::string::String {
+        fn from(value: GetFireDangerMapDate) -> Self {
+            value.0
+        }
+    }
+    impl ::std::str::FromStr for GetFireDangerMapDate {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            static PATTERN: ::std::sync::LazyLock<::regress::Regex> = ::std::sync::LazyLock::new(||
+            { ::regress::Regex::new("^[0-9]{4}-[0-9]{2}-[0-9]{2}$").unwrap() });
+            if PATTERN.find(value).is_none() {
+                return Err(
+                    "doesn't match pattern \"^[0-9]{4}-[0-9]{2}-[0-9]{2}$\"".into(),
+                );
+            }
+            Ok(Self(value.to_string()))
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for GetFireDangerMapDate {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for GetFireDangerMapDate {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl<'de> ::serde::Deserialize<'de> for GetFireDangerMapDate {
+        fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+        where
+            D: ::serde::Deserializer<'de>,
+        {
+            ::std::string::String::deserialize(deserializer)?
+                .parse()
+                .map_err(|e: self::error::ConversionError| {
+                    <D::Error as ::serde::de::Error>::custom(e.to_string())
+                })
+        }
+    }
+    ///`GetFireDangerMapFireLayer`
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum GetFireDangerMapFireLayer {
+        #[serde(rename = "lsasaf_fwi_continent")]
+        LsasafFwiContinent,
+        #[serde(rename = "lsasaf_isi_continent")]
+        LsasafIsiContinent,
+        #[serde(rename = "lsasaf_bui_continent")]
+        LsasafBuiContinent,
+        #[serde(rename = "lsasaf_ffmc_continent")]
+        LsasafFfmcContinent,
+        #[serde(rename = "lsasaf_p2000_continent")]
+        LsasafP2000Continent,
+        #[serde(rename = "lsasaf_risk_continent")]
+        LsasafRiskContinent,
+    }
+    impl ::std::fmt::Display for GetFireDangerMapFireLayer {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::LsasafFwiContinent => f.write_str("lsasaf_fwi_continent"),
+                Self::LsasafIsiContinent => f.write_str("lsasaf_isi_continent"),
+                Self::LsasafBuiContinent => f.write_str("lsasaf_bui_continent"),
+                Self::LsasafFfmcContinent => f.write_str("lsasaf_ffmc_continent"),
+                Self::LsasafP2000Continent => f.write_str("lsasaf_p2000_continent"),
+                Self::LsasafRiskContinent => f.write_str("lsasaf_risk_continent"),
+            }
+        }
+    }
+    impl ::std::str::FromStr for GetFireDangerMapFireLayer {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "lsasaf_fwi_continent" => Ok(Self::LsasafFwiContinent),
+                "lsasaf_isi_continent" => Ok(Self::LsasafIsiContinent),
+                "lsasaf_bui_continent" => Ok(Self::LsasafBuiContinent),
+                "lsasaf_ffmc_continent" => Ok(Self::LsasafFfmcContinent),
+                "lsasaf_p2000_continent" => Ok(Self::LsasafP2000Continent),
+                "lsasaf_risk_continent" => Ok(Self::LsasafRiskContinent),
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for GetFireDangerMapFireLayer {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for GetFireDangerMapFireLayer {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`GetModelMapModelLayer`
+    #[derive(
+        ::serde::Deserialize,
+        ::serde::Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        Ord,
+        PartialEq,
+        PartialOrd
+    )]
+    pub enum GetModelMapModelLayer {
+        #[serde(rename = "ecmwf_2t_atlantic")]
+        Ecmwf2tAtlantic,
+        #[serde(rename = "ecmwf_mslp_atlantic")]
+        EcmwfMslpAtlantic,
+        #[serde(rename = "ecmwf_pcp_atlantic")]
+        EcmwfPcpAtlantic,
+        #[serde(rename = "ecmwf_10windintensity_atlantic")]
+        Ecmwf10windintensityAtlantic,
+    }
+    impl ::std::fmt::Display for GetModelMapModelLayer {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            match *self {
+                Self::Ecmwf2tAtlantic => f.write_str("ecmwf_2t_atlantic"),
+                Self::EcmwfMslpAtlantic => f.write_str("ecmwf_mslp_atlantic"),
+                Self::EcmwfPcpAtlantic => f.write_str("ecmwf_pcp_atlantic"),
+                Self::Ecmwf10windintensityAtlantic => {
+                    f.write_str("ecmwf_10windintensity_atlantic")
+                }
+            }
+        }
+    }
+    impl ::std::str::FromStr for GetModelMapModelLayer {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            match value {
+                "ecmwf_2t_atlantic" => Ok(Self::Ecmwf2tAtlantic),
+                "ecmwf_mslp_atlantic" => Ok(Self::EcmwfMslpAtlantic),
+                "ecmwf_pcp_atlantic" => Ok(Self::EcmwfPcpAtlantic),
+                "ecmwf_10windintensity_atlantic" => {
+                    Ok(Self::Ecmwf10windintensityAtlantic)
+                }
+                _ => Err("invalid value".into()),
+            }
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for GetModelMapModelLayer {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for GetModelMapModelLayer {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    ///`GetModelMapTime`
+    #[derive(::serde::Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+    #[serde(transparent)]
+    pub struct GetModelMapTime(::std::string::String);
+    impl ::std::ops::Deref for GetModelMapTime {
+        type Target = ::std::string::String;
+        fn deref(&self) -> &::std::string::String {
+            &self.0
+        }
+    }
+    impl ::std::convert::From<GetModelMapTime> for ::std::string::String {
+        fn from(value: GetModelMapTime) -> Self {
+            value.0
+        }
+    }
+    impl ::std::str::FromStr for GetModelMapTime {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            static PATTERN: ::std::sync::LazyLock<::regress::Regex> = ::std::sync::LazyLock::new(||
+            {
+                ::regress::Regex::new("^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}_00_00$")
+                    .unwrap()
+            });
+            if PATTERN.find(value).is_none() {
+                return Err(
+                    "doesn't match pattern \"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}_00_00$\""
+                        .into(),
+                );
+            }
+            Ok(Self(value.to_string()))
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for GetModelMapTime {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for GetModelMapTime {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl<'de> ::serde::Deserialize<'de> for GetModelMapTime {
+        fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+        where
+            D: ::serde::Deserializer<'de>,
+        {
+            ::std::string::String::deserialize(deserializer)?
+                .parse()
+                .map_err(|e: self::error::ConversionError| {
+                    <D::Error as ::serde::de::Error>::custom(e.to_string())
+                })
+        }
+    }
+    ///`GetModelWindFieldTime`
+    #[derive(::serde::Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+    #[serde(transparent)]
+    pub struct GetModelWindFieldTime(::std::string::String);
+    impl ::std::ops::Deref for GetModelWindFieldTime {
+        type Target = ::std::string::String;
+        fn deref(&self) -> &::std::string::String {
+            &self.0
+        }
+    }
+    impl ::std::convert::From<GetModelWindFieldTime> for ::std::string::String {
+        fn from(value: GetModelWindFieldTime) -> Self {
+            value.0
+        }
+    }
+    impl ::std::str::FromStr for GetModelWindFieldTime {
+        type Err = self::error::ConversionError;
+        fn from_str(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            static PATTERN: ::std::sync::LazyLock<::regress::Regex> = ::std::sync::LazyLock::new(||
+            {
+                ::regress::Regex::new("^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}_00_00$")
+                    .unwrap()
+            });
+            if PATTERN.find(value).is_none() {
+                return Err(
+                    "doesn't match pattern \"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}_00_00$\""
+                        .into(),
+                );
+            }
+            Ok(Self(value.to_string()))
+        }
+    }
+    impl ::std::convert::TryFrom<&str> for GetModelWindFieldTime {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &str,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl ::std::convert::TryFrom<::std::string::String> for GetModelWindFieldTime {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
+            value.parse()
+        }
+    }
+    impl<'de> ::serde::Deserialize<'de> for GetModelWindFieldTime {
+        fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+        where
+            D: ::serde::Deserializer<'de>,
+        {
+            ::std::string::String::deserialize(deserializer)?
+                .parse()
+                .map_err(|e: self::error::ConversionError| {
+                    <D::Error as ::serde::de::Error>::custom(e.to_string())
+                })
+        }
     }
     ///`Location`
     #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -378,6 +824,45 @@ pub mod types {
         #[serde(flatten)]
         pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
     }
+    ///`WindGridComponent`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct WindGridComponent {
+        ///Row-major component values, m/s.
+        pub data: ::std::vec::Vec<::std::option::Option<f64>>,
+        pub header: WindGridHeader,
+        #[serde(flatten)]
+        pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+    }
+    ///`WindGridHeader`
+    #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+    pub struct WindGridHeader {
+        ///Longitude step, degrees.
+        pub dx: f64,
+        ///Latitude step, degrees.
+        pub dy: f64,
+        ///Northern latitude of the first row, degrees.
+        pub la1: f64,
+        ///Southern latitude of the last row, degrees.
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub la2: ::std::option::Option<f64>,
+        ///Western longitude of the first column, degrees.
+        pub lo1: f64,
+        ///Eastern longitude of the last column, degrees.
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+        pub lo2: ::std::option::Option<f64>,
+        ///Grid points; nx × ny.
+        #[serde(
+            rename = "numberPoints",
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        pub number_points: ::std::option::Option<::std::num::NonZeroU64>,
+        ///Grid columns (longitude steps).
+        pub nx: ::std::num::NonZeroU64,
+        ///Grid rows (latitude steps).
+        pub ny: ::std::num::NonZeroU64,
+        #[serde(flatten)]
+        pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+    }
     /// Error types.
     pub mod error {
         /// Error from a `TryFrom` or `FromStr` implementation.
@@ -414,7 +899,7 @@ pub mod types {
 #[derive(Clone, Debug)]
 /**Client for IPMA public-data — community-maintained upstream contract
 
-Describes source HTTP responses, not the normalized gRPC API. This specification is maintained independently and is not published or endorsed by IPMA. Based on the website JavaScript and captured responses; covers only the four verified website feeds. No complete endpoint catalogue is claimed. Missing measurements, numeric strings, JSON numbers, nulls and -99 sentinels are kept in their source representation. Unknown fields are permitted. Response fields are required only where the source reference and/or consumer invariants provide evidence. Capture fixtures do not establish universal guarantees. Naive timestamps are source strings interpreted as UTC by the website; no RFC3339 timezone suffix is invented. Attribution and reuse conditions: https://api.ipma.pt/.
+Describes source HTTP responses, not the normalized gRPC API. This specification is maintained independently and is not published or endorsed by IPMA. Based on the website JavaScript and captured responses; covers only the verified Portugal website feeds listed here. No complete endpoint catalogue is claimed. Missing measurements, numeric strings, JSON numbers, nulls and -99 sentinels are kept in their source representation. Unknown fields are permitted. Response fields are required only where the source reference and/or consumer invariants provide evidence. Capture fixtures do not establish universal guarantees. Naive timestamps are source strings interpreted as UTC by the website; no RFC3339 timezone suffix is invented. Attribution and reuse conditions: https://api.ipma.pt/.
 
 Version: 0.1.0*/
 pub struct Client {
@@ -628,6 +1113,192 @@ Sends a `GET` request to `/warnings/warnings_www.json`
             .build()?;
         let info = OperationInfo {
             operation_id: "get_warnings",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(ResponseValue::empty(response))),
+            500u16..=599u16 => Err(Error::ErrorResponse(ResponseValue::empty(response))),
+            _ => Err(Error::UnexpectedResponse(response)),
+        }
+    }
+    /**Monthly series of daily surface-station summaries
+
+One station-month of daily summaries for the main IPMA surface stations on the mainland, Azores and Madeira. The directory month is zero-padded while the filename month is not, so monthDir and month must name the same month. Rows cover every day of the month; days not yet observed have null measurements. Archived months were observed from January 2019. Unpublished station-months, including 1200579 Lisboa listed by the website, redirect to the IPMA homepage with HTTP 302 rather than returning 404.
+
+Sends a `GET` request to `/observation/surface-stations/daily_stations/{year}/{monthDir}/obs_dia_{year}_{month}_{stationId}.json`
+
+Arguments:
+- `year`: Calendar year; used in the directory and filename.
+- `month_dir`: Zero-padded month directory, 01-12.
+- `month`: Unpadded filename month, 1-12; the same month as monthDir.
+- `station_id`: Surface station ID. The website lists 1200501, 1200511, 1200512, 1200522, 1200524, 1200545, 1200548, 1200551, 1200554, 1200558, 1200560, 1200562, 1200567, 1200570, 1200571, 1200575, 1200579, 1210622, 1210683, 1210702, 1210718, 1210734 and 1210770.
+*/
+    pub async fn get_daily_station_observations<'a>(
+        &'a self,
+        year: i64,
+        month_dir: &'a types::GetDailyStationObservationsMonthDir,
+        month: ::std::num::NonZeroU64,
+        station_id: ::std::num::NonZeroU64,
+    ) -> Result<ResponseValue<types::DailyStationObservations>, Error<()>> {
+        let url = format!(
+            "{}/observation/surface-stations/daily_stations/{}/{}/obs_dia_{}_{}_{}.json",
+            self.baseurl, encode_path(& year.to_string()), encode_path(& month_dir
+            .to_string()), encode_path(& year.to_string()), encode_path(& month
+            .to_string()), encode_path(& station_id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map
+            .append(
+                ::reqwest::header::HeaderName::from_static("api-version"),
+                ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+            );
+        #[allow(unused_mut)]
+        let mut request = self
+            .client
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "get_daily_station_observations",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(ResponseValue::empty(response))),
+            500u16..=599u16 => Err(Error::ErrorResponse(ResponseValue::empty(response))),
+            _ => Err(Error::UnexpectedResponse(response)),
+        }
+    }
+    /**Daily LSA SAF fire-danger map frame for mainland Portugal
+
+Transparent PNG overlay for the website fire-danger map. The image covers latitude 35.9077838 to 43.9007122 and longitude -12.8000047 to -1.2014967 (WGS84 bounds used by the website). Layers: lsasaf_fwi_continent Fire Weather Index; lsasaf_isi_continent Initial Spread Index; lsasaf_bui_continent Buildup Index; lsasaf_ffmc_continent Fine Fuel Moisture Code; lsasaf_p2000_continent probability that a detected fire reaches 2000 GJ of released energy; lsasaf_risk_continent Fire Risk Map classes. Values are colour classes; the legends live on the website page. Frames were observed from the previous UTC day through about five days ahead; older and later dates redirect to the IPMA homepage with HTTP 302. The website also references lsasaf_fwi_prc_continent, but no frame was published for any probed date.
+
+Sends a `GET` request to `/mf2_preview/{fireLayer}/{fireLayer}_{date}T00_00_00.png`
+
+Arguments:
+- `fire_layer`: Fire-danger layer name; used in the directory and filename.
+- `date`: UTC forecast day, YYYY-MM-DD. The website formats this name in browser-local time, which matched UTC for the November 2026 captures; daylight-saving naming is unverified.
+*/
+    pub async fn get_fire_danger_map<'a>(
+        &'a self,
+        fire_layer: types::GetFireDangerMapFireLayer,
+        date: &'a types::GetFireDangerMapDate,
+    ) -> Result<ResponseValue<ByteStream>, Error<()>> {
+        let url = format!(
+            "{}/mf2_preview/{}/{}_{}T00_00_00.png", self.baseurl, encode_path(&
+            fire_layer.to_string()), encode_path(& fire_layer.to_string()), encode_path(&
+            date.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map
+            .append(
+                ::reqwest::header::HeaderName::from_static("api-version"),
+                ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+            );
+        #[allow(unused_mut)]
+        let mut request = self.client.get(url).headers(header_map).build()?;
+        let info = OperationInfo {
+            operation_id: "get_fire_danger_map",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => Ok(ResponseValue::stream(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(ResponseValue::empty(response))),
+            500u16..=599u16 => Err(Error::ErrorResponse(ResponseValue::empty(response))),
+            _ => Err(Error::UnexpectedResponse(response)),
+        }
+    }
+    /**Hourly ECMWF model map frame for Portugal and the Atlantic
+
+Transparent PNG overlay for the website numerical-forecast map. The image covers latitude 27.9624 to 46.75 and longitude -37.05 to 0.0802303 (WGS84 bounds used by the website), including mainland Portugal, the Azores and Madeira. Layers: ecmwf_2t_atlantic 2 m temperature; ecmwf_mslp_atlantic mean sea-level pressure; ecmwf_pcp_atlantic precipitation; ecmwf_10windintensity_atlantic 10 m wind speed. Values are colour classes; the legends live on the website page. Frames were observed hourly from 00:00 UTC on the previous day to about 48 hours ahead; other hours redirect to the IPMA homepage with HTTP 302.
+
+Sends a `GET` request to `/mf2_preview/{modelLayer}/{modelLayer}_{time}.png`
+
+Arguments:
+- `model_layer`: Model layer name; used in the directory and filename.
+- `time`: UTC valid hour, YYYY-MM-DDTHH_00_00. The website formats this name in browser-local time, which matched UTC for the November 2026 captures; daylight-saving naming is unverified.
+*/
+    pub async fn get_model_map<'a>(
+        &'a self,
+        model_layer: types::GetModelMapModelLayer,
+        time: &'a types::GetModelMapTime,
+    ) -> Result<ResponseValue<ByteStream>, Error<()>> {
+        let url = format!(
+            "{}/mf2_preview/{}/{}_{}.png", self.baseurl, encode_path(& model_layer
+            .to_string()), encode_path(& model_layer.to_string()), encode_path(& time
+            .to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map
+            .append(
+                ::reqwest::header::HeaderName::from_static("api-version"),
+                ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+            );
+        #[allow(unused_mut)]
+        let mut request = self.client.get(url).headers(header_map).build()?;
+        let info = OperationInfo {
+            operation_id: "get_model_map",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => Ok(ResponseValue::stream(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(ResponseValue::empty(response))),
+            500u16..=599u16 => Err(Error::ErrorResponse(ResponseValue::empty(response))),
+            _ => Err(Error::UnexpectedResponse(response)),
+        }
+    }
+    /**Hourly ECMWF 10 m wind vector grid for Portugal and the Atlantic
+
+Wind field animated as particles on the website numerical-forecast map. The array holds two grid components with identical headers; the website reads the first as the eastward (u) and the second as the northward (v) component, in m/s. Each data array is row-major, starting at la1/lo1 (north-west) and stepping east by dx and south by dy. Frame availability matches get_model_map; other hours redirect to the IPMA homepage with HTTP 302.
+
+Sends a `GET` request to `/mf2_preview/Tracers/{time}.json`
+
+Arguments:
+- `time`: UTC valid hour, YYYY-MM-DDTHH_00_00. The website formats this name in browser-local time, which matched UTC for the November 2026 captures; daylight-saving naming is unverified.
+*/
+    pub async fn get_model_wind_field<'a>(
+        &'a self,
+        time: &'a types::GetModelWindFieldTime,
+    ) -> Result<ResponseValue<::std::vec::Vec<types::WindGridComponent>>, Error<()>> {
+        let url = format!(
+            "{}/mf2_preview/Tracers/{}.json", self.baseurl, encode_path(& time
+            .to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map
+            .append(
+                ::reqwest::header::HeaderName::from_static("api-version"),
+                ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+            );
+        #[allow(unused_mut)]
+        let mut request = self
+            .client
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "get_model_wind_field",
         };
         self.pre(&mut request, &info).await?;
         let result = self.exec(request, &info).await;
