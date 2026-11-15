@@ -24,6 +24,8 @@ from referencing.jsonschema import DRAFT4
 
 ROOT = Path(__file__).resolve().parents[2]
 LIMIT = 32 * 1024 * 1024
+PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
+EXTENSIONS = {"text/csv": "csv", "application/zip": "zip", "image/png": "png"}
 
 
 def read_specs():
@@ -105,6 +107,10 @@ def validate_response(spec, operation, body):
             if not archive.namelist() or archive.testzip() is not None:
                 raise ValueError("empty or corrupt icon archive")
         return None
+    if media == "image/png":
+        if not body.startswith(PNG_SIGNATURE):
+            raise ValueError(f"{operation}: body is not a PNG image")
+        return None
     raise ValueError(f"Unsupported media type {media}")
 
 
@@ -150,8 +156,20 @@ def unknown_fields(spec, schema, value, path="$", found=None):
     return sorted(found)
 
 
+def is_grid(row):
+    return (
+        isinstance(row, dict)
+        and isinstance(row.get("header"), dict)
+        and isinstance(row["header"].get("nx"), int)
+        and isinstance(row.get("data"), list)
+    )
+
+
 def sample(value):
     """Small structural samples, never regenerated into the spec automatically."""
+    if isinstance(value, list) and value and all(is_grid(row) for row in value):
+        # Keep each grid component's header and first row of points.
+        return [{**row, "data": row["data"][: row["header"]["nx"]]} for row in value]
     if isinstance(value, list):
         # Keep representatives of every key/type combination, not just the first row.
         seen, result = set(), []
@@ -217,10 +235,18 @@ def fetch(url):
         return body, response.headers.get("Content-Type", ""), response.status
 
 
-def capture(specs, output):
+def probe_value(param, now):
+    # Rolling feeds only keep recent files, so a fixed example would expire.
+    if "x-probe-current-utc" in param:
+        return now.strftime(param["x-probe-current-utc"])
+    return str(param["schema"]["example"])
+
+
+def capture(specs, output, now=None):
     if output.exists():
         raise ValueError(f"{output} already exists; choose a new review directory")
     output.mkdir(parents=True)
+    now = now or dt.datetime.now(dt.UTC)
     records = []
     failures = []
     for name, spec in specs.items():
@@ -230,7 +256,7 @@ def capture(specs, output):
             actual = path
             for param in op.get("parameters", []):
                 actual = actual.replace(
-                    "{" + param["name"] + "}", str(param["schema"]["example"])
+                    "{" + param["name"] + "}", probe_value(param, now)
                 )
             url = spec["servers"][0]["url"] + actual
             operation = op["operationId"]
@@ -251,13 +277,7 @@ def capture(specs, output):
                     if media == "text/csv"
                     else []
                 )
-                extension = (
-                    "json"
-                    if value is not None
-                    else "csv"
-                    if media == "text/csv"
-                    else "zip"
-                )
+                extension = "json" if value is not None else EXTENSIONS[media]
                 stored = (
                     (
                         json.dumps(sample(value), ensure_ascii=False, indent=2) + "\n"
@@ -286,6 +306,8 @@ def capture(specs, output):
                         if value is not None
                         else "csv-header-and-two-rows"
                         if media == "text/csv"
+                        else "complete-image"
+                        if media == "image/png"
                         else "complete-archive",
                         "observed_additional_fields": unknown,
                     }

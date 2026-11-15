@@ -1,4 +1,5 @@
 import copy
+import datetime as dt
 import tempfile
 import unittest
 from pathlib import Path
@@ -10,6 +11,7 @@ from contracts import (
     capture,
     compare,
     load_report,
+    probe_value,
     read_specs,
     response_schema,
     sample,
@@ -87,6 +89,35 @@ class ContractTests(unittest.TestCase):
         ]
         self.assertEqual(len(sample(values)), 5)
 
+    def test_wind_grid_sampling_keeps_headers_and_first_row(self):
+        header = {"nx": 2, "ny": 2, "lo1": -37.0, "la1": 46.7, "dx": 1, "dy": 1}
+        grid = [
+            {"header": header, "data": [1.0, 2.0, 3.0, 4.0]},
+            {"header": header, "data": [5.0, 6.0, 7.0, 8.0]},
+        ]
+        self.assertEqual(
+            [row["data"] for row in sample(grid)], [[1.0, 2.0], [5.0, 6.0]]
+        )
+
+    def test_map_frames_must_be_png_images(self):
+        spec = self.specs["public-data"]
+        validate_response(spec, "get_model_map", b"\x89PNG\r\n\x1a\nrest")
+        with self.assertRaises(ValueError):
+            validate_response(spec, "get_model_map", b"<html>moved</html>")
+
+    def test_rolling_frame_parameters_use_the_probe_time(self):
+        spec = self.specs["public-data"]
+        now = dt.datetime(2026, 7, 1, 9, 41, tzinfo=dt.UTC)
+        values = {
+            param["name"]: probe_value(param, now)
+            for path, item in spec["paths"].items()
+            if item["get"]["operationId"] in {"get_fire_danger_map", "get_model_map"}
+            for param in item["get"]["parameters"]
+        }
+        self.assertEqual(values["date"], "2026-07-01")
+        self.assertEqual(values["time"], "2026-07-01T09_00_00")
+        self.assertEqual(values["modelLayer"], "ecmwf_pcp_atlantic")
+
     def test_climate_contract_rejects_missing_columns_and_nonnumeric_measurements(self):
         import csv
         import io
@@ -124,19 +155,24 @@ class ContractTests(unittest.TestCase):
             )
             for record in report["records"]
         }
+        captured_at = next(
+            record["captured_at"]
+            for record in report["records"]
+            if record["operation"] == "get_model_map"
+        )
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "candidate"
             with patch(
                 "contracts.fetch", side_effect=lambda url: responses[url]
             ) as fetch:
-                capture(self.specs, output)
-                self.assertEqual(fetch.call_count, 24)
+                capture(self.specs, output, now=dt.datetime.fromisoformat(captured_at))
+                self.assertEqual(fetch.call_count, 28)
             validate_fixtures(self.specs, output)
             # The API-local manifests also work without the combined probe report.
             (output / "manifest.json").unlink()
             validate_fixtures(self.specs, output)
             compare(ROOT, output)
-            for name, count in [("open-data", 20), ("public-data", 4)]:
+            for name, count in [("open-data", 20), ("public-data", 8)]:
                 local = load_report(output, [name])
                 self.assertEqual(len(local["records"]), count)
                 self.assertTrue(

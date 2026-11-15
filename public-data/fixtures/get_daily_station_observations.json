@@ -1,0 +1,29 @@
+{
+  "station_id": "1200545",
+  "station_name": "Porto / Pedras Rubras (IPMA)",
+  "latitude": 41.232275,
+  "longitude": -8.67910833,
+  "height": 69.0,
+  "data": [
+    {
+      "Pr_Nm_med": 1024.1,
+      "Tar_med": 16.9,
+      "Tar_max": 22.2,
+      "Tar_min": 13.0,
+      "HR_med": 75,
+      "ff_med": 4.0,
+      "RRR_qt": 0.0,
+      "datetime": "2026-10-01T00:00:00.000Z"
+    },
+    {
+      "Pr_Nm_med": 1020.9,
+      "Tar_med": 20.7,
+      "Tar_max": 26.9,
+      "Tar_min": 16.9,
+      "HR_med": 60,
+      "ff_med": 3.5,
+      "RRR_qt": 0.0,
+      "datetime": "2026-10-02T00:00:00.000Z"
+    }
+  ]
+}
